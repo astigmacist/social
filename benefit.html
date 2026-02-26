@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Льгота — Qamqor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" />
+        <span>Qamqor</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#apply" data-i="nav.apply">Подать заявку</a></li>
+        <li><a href="index.html#benefits" class="active" data-i="nav.benefits">Льготы</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="lang-btn" onclick="toggleLang()"><span id="langIcon"></span><span
+            id="langLabel">ҚАЗ</span></button>
+        <button class="profile-btn" onclick="window.location='profile.html'"><span id="profileIcon"></span><span
+            data-i="nav.profile">Мой профиль</span></button>
+      </div>
+      <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="detail-wrapper">
+    <div class="detail-main">
+      <button class="back-link" onclick="history.back()">
+        <span id="backArrow"></span>
+        <span data-i="nav.benefits">Льготы и пособия</span>
+      </button>
+      <div class="detail-card" id="detailCard">
+        <!-- filled by JS -->
+      </div>
+    </div>
+    <div class="detail-sidebar">
+      <div class="apply-cta-card">
+        <h3 id="ctaTitle">Нужна помощь?</h3>
+        <p id="ctaText">Подайте заявку онлайн и получите поддержку специалиста.</p>
+        <a href="index.html#apply"><button class="btn-white"><span id="ctaArrow"></span> <span
+              data-i="hero.btnApply">Подать заявку</span></button></a>
+      </div>
+      <div class="sidebar-card">
+        <h3 id="relatedTitle">Другие льготы</h3>
+        <div id="relatedList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <button class="chat-fab" id="chatFab" onclick="toggleChat()"><span id="chatFabIcon"></span><span
+      class="chat-notif"></span></button>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-avatar" id="chatAvatar"></div>
+      <div class="chat-header-info">
+        <h4 data-i="chat.title">Qamqor Бот</h4>
+        <p data-i="chat.subtitle">Виртуальный ассистент</p>
+      </div>
+      <button class="chat-close" onclick="toggleChat()" id="chatCloseBtn"></button>
+    </div>
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-footer">
+      <input class="chat-input" id="chatInput" placeholder="Напишите ваш вопрос..."
+        onkeydown="if(event.key==='Enter')sendChat()" />
+      <button class="chat-send" onclick="sendChat()" id="chatSendBtn"></button>
+    </div>
+  </div>
+
+  <script src="translations.js"></script>
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      const benefit = BENEFITS.find(b => b.id === id);
+      const lang = window.LANG || 'ru';
+
+      if (!benefit) {
+        document.getElementById('detailCard').innerHTML = '<p style="padding:40px;color:var(--text-muted)">Льгота не найдена.</p>';
+        return;
+      }
+
+      // Update page title
+      document.title = benefit.title[lang] + ' — Qamqor';
+
+      // Render detail card
+      const docs = benefit.docs[lang].map(d => `<li>${d}</li>`).join('');
+      const t = (k) => (TRANSLATIONS[lang]?.benefits?.[k] || k);
+
+      document.getElementById('detailCard').innerHTML = `
+    <div class="detail-head">
+      <div class="detail-icon">${ICONS[benefit.icon] || ICONS.shield}</div>
+      <div>
+        <div class="detail-badge">${benefit.badge[lang]}</div>
+        <h1>${benefit.title[lang]}</h1>
+      </div>
+    </div>
+    <div class="detail-section">
+      <h3>${lang === 'ru' ? 'О льготе' : 'Жеңілдік туралы'}</h3>
+      <p>${benefit.shortDesc[lang]}</p>
+    </div>
+    <div class="detail-section">
+      <h3>${lang === 'ru' ? 'Размер выплаты / Объём помощи' : 'Төлем мөлшері / Көмек көлемі'}</h3>
+      <div class="amount-box">${benefit.amount[lang]}</div>
+    </div>
+    <div class="detail-section">
+      <h3>${lang === 'ru' ? 'Кто имеет право' : 'Кімдер алуға құқылы'}</h3>
+      <p>${benefit.who[lang]}</p>
+    </div>
+    <div class="detail-section">
+      <h3>${lang === 'ru' ? 'Необходимые документы' : 'Қажетті құжаттар'}</h3>
+      <ul class="docs-list">${docs}</ul>
+    </div>
+    <div class="detail-section">
+      <h3>${lang === 'ru' ? 'Как и где получить' : 'Қалай және қайдан алуға болады'}</h3>
+      <p>${benefit.how[lang]}</p>
+    </div>
+    <div class="detail-section">
+      <h3>${t('sourceLabel')}</h3>
+      <a href="${benefit.source}" target="_blank" class="source-link">
+        ${ICONS.globe} ${lang === 'ru' ? 'Официальный источник' : 'Ресми дерек көзі'} →
+      </a>
+    </div>
+  `;
+
+      // Render related benefits
+      const related = BENEFITS.filter(b => b.id !== id).slice(0, 6);
+      document.getElementById('relatedList').innerHTML = related.map(b => `
+    <div class="related-item" onclick="window.location='benefit.html?id=${b.id}'">
+      <div class="ri-icon">${ICONS[b.icon] || ICONS.shield}</div>
+      <div class="ri-text">
+        <h4>${b.title[lang]}</h4>
+        <p>${b.badge[lang]}</p>
+      </div>
+    </div>
+  `).join('');
+
+      // i18n for static elements
+      document.getElementById('relatedTitle').textContent = lang === 'ru' ? 'Другие льготы' : 'Басқа жеңілдіктер';
+      document.getElementById('ctaTitle').textContent = lang === 'ru' ? 'Нужна помощь?' : 'Көмек керек пе?';
+      document.getElementById('ctaText').textContent = lang === 'ru' ? 'Подайте заявку онлайн и получите поддержку специалиста.' : 'Онлайн өтініш беріп, маман қолдауын алыңыз.';
+    });
+  </script>
+</body>
+
+</html>

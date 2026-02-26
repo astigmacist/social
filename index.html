@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qamqor — Социальная поддержка граждан</title>
+  <meta name="description"
+    content="Qamqor — платформа социальной поддержки. Подайте заявку на помощь, узнайте о льготах и пособиях." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" />
+        <span>Qamqor</span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#hero" data-i="nav.home">Главная</a></li>
+        <li><a href="#apply" data-i="nav.apply">Подать заявку</a></li>
+        <li><a href="#benefits" data-i="nav.benefits">Льготы и пособия</a></li>
+        <li><a href="#volunteers" data-i="nav.volunteers">Волонтёрам</a></li>
+        <li><a href="#contacts" data-i="nav.contacts">Контакты</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="lang-btn" id="langBtn" onclick="toggleLang()">
+          <span id="langIcon"></span>
+          <span id="langLabel">ҚАЗ</span>
+        </button>
+        <button class="profile-btn" id="profileBtn" onclick="openAuthModal()">
+          <span id="profileIcon"></span>
+          <span id="profileBtnLabel" data-i="nav.profile">Мой профиль</span>
+        </button>
+      </div>
+      <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section id="hero" class="hero">
+    <div class="hero-inner hero-centered">
+      <div class="hero-content">
+        <div class="hero-tag"><span class="hero-dot"></span><span data-i="hero.badge">Бесплатная социальная
+            поддержка</span></div>
+        <h1 class="hero-title">
+          <span data-i="hero.title">Социальная помощь для</span><br />
+          <span class="accent" data-i="hero.titleAccent">каждого гражданина</span>
+        </h1>
+        <p class="hero-subtitle" data-i="hero.subtitle">Подайте заявку на помощь онлайн, узнайте о льготах и пособиях,
+          на которые вы имеете право.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="scrollToId('apply')">
+            <span id="hero-apply-icon"></span><span data-i="hero.btnApply">Подать заявку</span>
+          </button>
+          <button class="btn-outline" onclick="scrollToId('benefits')">
+            <span data-i="hero.btnBenefits">Узнать о льготах</span>
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-n">1 200+</span><span class="stat-l" data-i="stats.helped">Людям
+              помогли</span></div>
+          <div class="stat"><span class="stat-n">48</span><span class="stat-l" data-i="stats.types">Видов льгот</span>
+          </div>
+          <div class="stat"><span class="stat-n">150+</span><span class="stat-l"
+              data-i="stats.volunteers">Волонтёров</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK ACCESS -->
+  <div class="quick-access">
+    <div class="qa-grid">
+      <div class="qa-card" onclick="scrollToId('apply')">
+        <div class="qa-icon blue" id="qa-icon-0"></div>
+        <h3 data-i="quick.apply.title">Подать заявку</h3>
+        <p data-i="quick.apply.desc">Онлайн-форма заявления на социальную помощь</p>
+        <span class="qa-link"><span data-i="hero.btnApply">Подать заявку</span><span id="qa-arr-0"></span></span>
+      </div>
+      <div class="qa-card" onclick="scrollToId('benefits')">
+        <div class="qa-icon green" id="qa-icon-1"></div>
+        <h3 data-i="quick.benefits.title">Льготы и пособия</h3>
+        <p data-i="quick.benefits.desc">Справочник с фильтрами по категориям</p>
+        <span class="qa-link"><span data-i="hero.btnBenefits">Узнать о льготах</span><span id="qa-arr-1"></span></span>
+      </div>
+      <div class="qa-card" onclick="scrollToId('volunteers')">
+        <div class="qa-icon teal" id="qa-icon-2"></div>
+        <h3 data-i="quick.volunteers.title">Стать волонтёром</h3>
+        <p data-i="quick.volunteers.desc">Помогайте людям и получайте опыт</p>
+        <span class="qa-link"><span data-i="quick.volunteers.title">Стать волонтёром</span><span
+            id="qa-arr-2"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLY -->
+  <section id="apply" class="section alt">
+    <div class="container">
+      <div class="sec-hdr">
+        <span class="sec-tag" data-i="apply.tag">Онлайн-заявка</span>
+        <h2 class="sec-title"><span data-i="apply.title">Подайте заявку</span> <span class="accent"
+            data-i="apply.titleAccent">на помощь</span></h2>
+        <p class="sec-desc" data-i="apply.desc">Специалист свяжется с вами в течение 1–2 рабочих дней</p>
+      </div>
+      <div class="apply-wrapper">
+        <div class="form-card">
+          <form id="applyForm" onsubmit="submitApply(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label data-i="apply.name">Полное имя</label>
+                <input type="text" id="fName" data-ph="apply.namePh" placeholder="Иванов Иван Иванович" required />
+              </div>
+              <div class="form-group">
+                <label data-i="apply.phone">Телефон</label>
+                <input type="tel" id="fPhone" placeholder="+7 (___) ___-__-__" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label data-i="apply.email">Email</label>
+              <input type="email" id="fEmail" placeholder="example@mail.com" />
+            </div>
+            <div class="form-group">
+              <label data-i="apply.helpType">Тип помощи</label>
+              <select id="fType" required>
+                <option value="" data-i="apply.helpTypePh">— Выберите тип помощи —</option>
+                <option value="legal" data-i="apply.helpTypes.legal">Юридическая помощь</option>
+                <option value="psychological" data-i="apply.helpTypes.psychological">Психологическая поддержка</option>
+                <option value="material" data-i="apply.helpTypes.material">Материальная помощь</option>
+                <option value="medical" data-i="apply.helpTypes.medical">Медицинская помощь</option>
+                <option value="housing" data-i="apply.helpTypes.housing">Жилищный вопрос</option>
+                <option value="employment" data-i="apply.helpTypes.employment">Трудоустройство</option>
+                <option value="elderly" data-i="apply.helpTypes.elderly">Помощь пожилым</option>
+                <option value="disability" data-i="apply.helpTypes.disability">Помощь лицам с ОВЗ</option>
+                <option value="children" data-i="apply.helpTypes.children">Помощь семьям с детьми</option>
+                <option value="other" data-i="apply.helpTypes.other">Другое</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label data-i="apply.desc2">Опишите ситуацию</label>
+              <textarea id="fDesc" data-ph="apply.descPh" placeholder="Расскажите подробно о вашей ситуации..."
+                required></textarea>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="fConsent" required />
+              <label for="fConsent" data-i="apply.consent">Согласен(а) на обработку персональных данных</label>
+            </div>
+            <button type="submit" class="btn-primary w-full" id="submitBtn">
+              <span id="submit-icon"></span><span data-i="apply.submit">Отправить заявку</span>
+            </button>
+          </form>
+        </div>
+        <div class="apply-sidebar" id="applySidebar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section id="benefits" class="section blue-tint">
+    <div class="container">
+      <div class="sec-hdr">
+        <span class="sec-tag" data-i="benefits.tag">Льготы и пособия</span>
+        <h2 class="sec-title"><span data-i="benefits.title">Ваши права и</span> <span class="accent"
+            data-i="benefits.titleAccent">возможности</span></h2>
+        <p class="sec-desc" data-i="benefits.desc">Выберите категорию для поиска нужной льготы. Данные основаны на
+          официальных источниках.</p>
+      </div>
+      <div class="benefits-tabs" id="benefitsTabs"></div>
+      <div class="benefits-grid" id="benefitsGrid"></div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEERS -->
+  <section id="volunteers" class="section alt">
+    <div class="container">
+      <div class="sec-hdr">
+        <span class="sec-tag" data-i="volunteers.tag">Волонтёрство</span>
+        <h2 class="sec-title"><span data-i="volunteers.title">Станьте частью</span> <span class="accent"
+            data-i="volunteers.titleAccent">команды</span></h2>
+        <p class="sec-desc" data-i="volunteers.desc">Помогайте людям, которые нуждаются в поддержке</p>
+      </div>
+      <div class="vol-grid">
+        <div class="roles-grid" id="rolesGrid"></div>
+        <div class="vol-form">
+          <h3 data-i="volunteers.formTitle">Записаться волонтёром</h3>
+          <form id="volForm" onsubmit="submitVol(event)">
+            <div class="form-group"><label data-i="volunteers.fName">Ваше имя</label><input type="text" required
+                data-ph="volunteers.fName" placeholder="Ваше имя" /></div>
+            <div class="form-group"><label data-i="volunteers.fPhone">Телефон</label><input type="tel" required
+                placeholder="+7 (___) ___-__-__" /></div>
+            <div class="form-group">
+              <label data-i="volunteers.fRole">Направление</label>
+              <select id="vRole" required>
+                <option value="" data-i="volunteers.fRolePh">Выберите направление</option>
+              </select>
+            </div>
+            <div class="form-group"><label data-i="volunteers.fAbout">О себе</label><textarea rows="3"
+                placeholder="..."></textarea></div>
+            <button type="submit" class="btn-primary w-full"><span
+                data-i="volunteers.fSubmit">Записаться</span></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTS -->
+  <section id="contacts" class="section teal-tint">
+    <div class="container">
+      <div class="sec-hdr">
+        <span class="sec-tag" data-i="contacts.tag">Контакты</span>
+        <h2 class="sec-title" data-i="contacts.title">Свяжитесь с нами</h2>
+      </div>
+      <div class="contacts-grid" id="contactsGrid"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo">
+            <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" /><span>Qamqor</span>
+          </div>
+          <p data-i="footer.desc">Платформа социальной поддержки граждан Казахстана.</p>
+        </div>
+        <div class="footer-col">
+          <h5 data-i="footer.sections">Разделы</h5>
+          <ul>
+            <li><a href="#apply" data-i="nav.apply">Подать заявку</a></li>
+            <li><a href="#benefits" data-i="nav.benefits">Льготы и пособия</a></li>
+            <li><a href="#volunteers" data-i="nav.volunteers">Волонтёрам</a></li>
+            <li><a href="#contacts" data-i="nav.contacts">Контакты</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5 data-i="footer.helpTypes">Виды помощи</h5>
+          <ul id="footerHelpList"></ul>
+        </div>
+      </div>
+      <div class="footer-bottom"><span data-i="footer.rights">© 2026 Qamqor. Все права защищены.</span></div>
+    </div>
+  </footer>
+
+  <!-- SUCCESS MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-icon" id="modalIconWrap"></div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalMsg"></p>
+      <button class="btn-primary w-full" onclick="closeModal()" data-i="modal.close">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="authOverlay" onclick="closeAuthModal()">
+    <div class="auth-modal" onclick="event.stopPropagation()">
+      <button class="auth-close" onclick="closeAuthModal()" id="authCloseBtn"></button>
+      <div class="auth-logo">
+        <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" />
+        <span style="font-weight:800;font-size:1.1rem;color:var(--primary)">Qamqor</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')"
+          data-i="auth.login">Войти</button>
+        <button class="auth-tab" id="tabReg" onclick="switchAuthTab('register')"
+          data-i="auth.register">Регистрация</button>
+      </div>
+
+      <!-- Login form -->
+      <div id="authLogin">
+        <div class="form-group">
+          <label data-i="auth.phone">Телефон или Email</label>
+          <input type="text" id="loginPhone" placeholder="+7 (___) или email" />
+        </div>
+        <div class="form-group">
+          <label data-i="auth.password">Пароль</label>
+          <input type="password" id="loginPass" placeholder="••••••••" />
+        </div>
+        <button class="btn-primary w-full" onclick="doLogin()" style="margin-bottom:12px" data-i="auth.loginBtn">Войти в
+          аккаунт</button>
+        <p class="auth-hint" data-i="auth.forgotHint">Забыли пароль? <a onclick="showReset()"
+            data-i="auth.forgot">Восстановить</a></p>
+      </div>
+
+      <!-- Register form -->
+      <div id="authRegister" style="display:none">
+        <div class="form-group">
+          <label data-i="apply.name">Полное имя</label>
+          <input type="text" id="regName" placeholder="Иванов Иван Иванович" />
+        </div>
+        <div class="form-group">
+          <label data-i="apply.phone">Телефон</label>
+          <input type="tel" id="regPhone" placeholder="+7 (___) ___-__-__" />
+        </div>
+        <div class="form-group">
+          <label data-i="apply.email">Email</label>
+          <input type="email" id="regEmail" placeholder="example@mail.com" />
+        </div>
+        <div class="form-group">
+          <label data-i="auth.password">Пароль</label>
+          <input type="password" id="regPass" placeholder="Минимум 8 символов" />
+        </div>
+        <div class="form-check" style="margin-bottom:16px">
+          <input type="checkbox" id="regConsent" />
+          <label for="regConsent" data-i="apply.consent">Согласен(а) на обработку персональных данных</label>
+        </div>
+        <button class="btn-primary w-full" onclick="doRegister()" data-i="auth.registerBtn">Создать аккаунт</button>
+      </div>
+
+      <div class="auth-divider"><span data-i="auth.or">или войдите через</span></div>
+      <button class="auth-egov-btn" onclick="doEGovLogin()">
+        <span id="authEgovIcon" style="display:flex"></span>
+        <span data-i="auth.egov">Войти через eGov.kz</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <button class="chat-fab" id="chatFab" onclick="toggleChat()">
+    <span id="chatFabIcon"></span>
+    <span class="chat-notif"></span>
+  </button>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-avatar" id="chatAvatar"></div>
+      <div class="chat-header-info">
+        <h4 data-i="chat.title">Qamqor Бот</h4>
+        <p data-i="chat.subtitle">Виртуальный ассистент · Онлайн</p>
+      </div>
+      <button class="chat-close" onclick="toggleChat()" id="chatCloseBtn"></button>
+    </div>
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-footer">
+      <input class="chat-input" id="chatInput" data-i-ph="chat.placeholder" placeholder="Напишите ваш вопрос..."
+        onkeydown="if(event.key==='Enter')sendChat()" />
+      <button class="chat-send" onclick="sendChat()" id="chatSendBtn"></button>
+    </div>
+  </div>
+
+  <script src="translations.js"></script>
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>

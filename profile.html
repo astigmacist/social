@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Мой профиль — Qamqor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" /><span>Qamqor</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html#apply" data-i="nav.apply">Подать заявку</a></li>
+                <li><a href="index.html#benefits" data-i="nav.benefits">Льготы</a></li>
+                <li><a href="index.html#contacts" data-i="nav.contacts">Контакты</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="lang-btn" onclick="toggleLang()"><span id="langIcon"></span><span
+                        id="langLabel">ҚАЗ</span></button>
+            </div>
+            <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="profile-wrapper">
+        <!-- Profile Header -->
+        <div class="profile-header-card">
+            <div class="profile-avatar" id="profileAvatar"></div>
+            <div class="profile-info">
+                <h2 id="profileName">Гость</h2>
+                <p id="profileEmail">Заполните профиль для полного доступа</p>
+            </div>
+            <div class="profile-actions">
+                <button class="edit-btn" id="editBtn" onclick="openEditModal()">
+                    <span id="editIcon"></span>
+                    <span data-i="profile.editBtn">Редактировать</span>
+                </button>
+                <button class="btn-primary" onclick="window.location='index.html#apply'">
+                    <span data-i="nav.apply">Подать заявку</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- My Applications -->
+        <div class="profile-section-card">
+            <h3 data-i="profile.myApps">Мои заявки</h3>
+            <div id="appsList"></div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editOverlay" onclick="closeEditModal()">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width:460px">
+            <h3 style="margin-bottom:20px" data-i="profile.editBtn">Редактировать профиль</h3>
+            <div class="form-group"><label data-i="apply.name">Имя</label><input type="text" id="editName"
+                    placeholder="Ваше имя" /></div>
+            <div class="form-group"><label data-i="apply.email">Email</label><input type="email" id="editEmail"
+                    placeholder="email@mail.com" /></div>
+            <div class="form-group"><label data-i="apply.phone">Телефон</label><input type="tel" id="editPhone"
+                    placeholder="+7 (___) ___-__-__" /></div>
+            <div style="display:flex;gap:10px;margin-top:8px">
+                <button class="btn-outline w-full" onclick="closeEditModal()" data-i="modal.close">Отмена</button>
+                <button class="btn-primary w-full" onclick="saveProfile()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="translations.js"></script>
+    <script src="data.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = window.LANG || 'ru';
+            const tr = TRANSLATIONS[lang].profile;
+
+            // Load profile from localStorage
+            const profile = JSON.parse(localStorage.getItem('qamqor_profile') || '{}');
+            document.getElementById('profileName').textContent = profile.name || (lang === 'ru' ? 'Гость' : 'Қонақ');
+            document.getElementById('profileEmail').textContent = profile.email || (lang === 'ru' ? 'Заполните профиль для полного доступа' : 'Толық қол жеткізу үшін профильді толтырыңыз');
+            if (profile.name) {
+                document.getElementById('editName').value = profile.name;
+                document.getElementById('editEmail').value = profile.email || '';
+                document.getElementById('editPhone').value = profile.phone || '';
+            }
+
+            // Load applications
+            const apps = JSON.parse(localStorage.getItem('qamqor_apps') || '[]');
+            const list = document.getElementById('appsList');
+
+            if (apps.length === 0) {
+                list.innerHTML = `
+      <div class="no-apps">
+        ${ICONS.document}
+        <p>${tr.noApps}</p>
+        <a href="index.html#apply"><button class="btn-primary">${tr.submitFirst}</button></a>
+      </div>`;
+            } else {
+                const statusMap = { pending: tr.statuses.pending, processing: tr.statuses.processing, done: tr.statuses.done };
+                list.innerHTML = apps.reverse().map((app, i) => `
+      <div class="app-item">
+        <span class="app-num">${tr.appNumber} #${app.number}</span>
+        <span class="app-type">${app.type}</span>
+        <span class="app-date">${app.date}</span>
+        <span class="badge-status ${app.status}">${statusMap[app.status]}</span>
+      </div>
+    `).join('');
+            }
+
+            window.openEditModal = () => document.getElementById('editOverlay').classList.add('active');
+            window.closeEditModal = () => document.getElementById('editOverlay').classList.remove('active');
+            window.saveProfile = () => {
+                const p = { name: document.getElementById('editName').value, email: document.getElementById('editEmail').value, phone: document.getElementById('editPhone').value };
+                localStorage.setItem('qamqor_profile', JSON.stringify(p));
+                document.getElementById('profileName').textContent = p.name || (lang === 'ru' ? 'Гость' : 'Қонақ');
+                document.getElementById('profileEmail').textContent = p.email || '';
+                closeEditModal();
+            };
+        });
+    </script>
+</body>
+
+</html>
