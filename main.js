@@ -1,13 +1,21 @@
-/* main.js — Qamqor Application Logic */
-
 // ========== LANGUAGE ==========
 window.LANG = localStorage.getItem('qamqor_lang') || 'ru';
+const API_BASE = '/api';
 
 function toggleLang() {
     window.LANG = window.LANG === 'ru' ? 'kz' : 'ru';
     localStorage.setItem('qamqor_lang', window.LANG);
-    applyI18n();
-    renderAll();
+    
+    // Add visual delay as requested
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay-lang';
+    overlay.innerHTML = '<div class="spinner"></div>';
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.classList.add('active'), 10);
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 800);
 }
 
 function applyI18n() {
@@ -48,17 +56,18 @@ function injectIcon(elementId, iconKey, size = 18) {
 }
 
 // ========== RENDER ALL DYNAMIC CONTENT ==========
-function renderAll() {
+async function renderAll() {
     renderNav();
     renderHeroCards();
-    renderBenefits('all');
-    renderBenefitTabs();
+    await renderBenefitTabs();
+    await renderBenefits('all');
     renderApplySidebar();
     renderVolunteerRoles();
     renderContacts();
     renderFooter();
     renderChatUI();
     applyI18n();
+    renderNews(); // load news section
 }
 
 function renderNav() {
@@ -101,40 +110,57 @@ function renderHeroCards() {
     el.querySelectorAll('.hc-icon svg').forEach(s => { s.style.width = s.style.height = '20px'; });
 }
 
-function renderBenefitTabs() {
+async function renderBenefitTabs() {
     const el = document.getElementById('benefitsTabs');
     if (!el) return;
-    const tabs = getT('benefits.tabs');
-    if (!tabs || typeof tabs !== 'object') return;
-    el.innerHTML = Object.entries(tabs).map(([key, label]) =>
-        `<button class="tab-btn${key === 'all' ? ' active' : ''}" data-tab="${key}">${label}</button>`).join('');
-    el.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            el.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderBenefits(btn.dataset.tab);
+    try {
+        const res = await fetch(`${API_BASE}/categories/`);
+        const categories = await res.json();
+        const lang = window.LANG;
+        const allLabel = lang === 'ru' ? 'Все' : 'Барлығы';
+        
+        let html = `<button class="tab-btn active" data-tab="all">${allLabel}</button>`;
+        html += categories.map(c => 
+            `<button class="tab-btn" data-tab="${c.slug}">${lang === 'ru' ? c.title_ru : c.title_kz}</button>`
+        ).join('');
+        
+        el.innerHTML = html;
+        el.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                el.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderBenefits(btn.dataset.tab);
+            });
         });
-    });
+    } catch (err) {
+        console.error('Fetch categories error:', err);
+    }
 }
 
-function renderBenefits(filter = 'all') {
+async function renderBenefits(filter = 'all') {
     const grid = document.getElementById('benefitsGrid');
     if (!grid) return;
     const lang = window.LANG;
-    const items = filter === 'all' ? BENEFITS : BENEFITS.filter(b => b.category === filter);
-    const learnMore = getT('benefits.learnMore') || 'Подробнее';
-    grid.innerHTML = items.map(b => `
-    <div class="benefit-card" onclick="window.location='benefit.html?id=${b.id}'">
-      <div class="bc-top">
-        <div class="bc-icon">${ICONS[b.icon] || ICONS.shield}</div>
-        <span class="bc-badge">${b.badge[lang]}</span>
-      </div>
-      <h4>${b.title[lang]}</h4>
-      <p>${b.shortDesc[lang]}</p>
-      <span class="bc-link">${learnMore} ${ICONS.chevron}</span>
-    </div>`).join('');
-    grid.querySelectorAll('.bc-icon svg').forEach(s => { s.style.width = s.style.height = '22px'; });
-    grid.querySelectorAll('.bc-link svg').forEach(s => { s.style.width = s.style.height = '14px'; });
+    try {
+        const res = await fetch(`${API_BASE}/benefits/?category=${filter}`);
+        const items = await res.json();
+        const learnMore = getT('benefits.learnMore') || 'Подробнее';
+        
+        grid.innerHTML = items.map(b => `
+        <div class="benefit-card" onclick="window.location='benefit.html?id=${b.id}'">
+          <div class="bc-top">
+            <div class="bc-icon">${ICONS[b.icon] || ICONS.shield}</div>
+            <span class="bc-badge">${lang === 'ru' ? b.badge_ru : b.badge_kz}</span>
+          </div>
+          <h4>${lang === 'ru' ? b.title_ru : b.title_kz}</h4>
+          <p>${lang === 'ru' ? b.short_desc_ru : b.short_desc_kz}</p>
+          <span class="bc-link">${learnMore} ${ICONS.chevron}</span>
+        </div>`).join('');
+        grid.querySelectorAll('.bc-icon svg').forEach(s => { s.style.width = s.style.height = '22px'; });
+        grid.querySelectorAll('.bc-link svg').forEach(s => { s.style.width = s.style.height = '14px'; });
+    } catch (err) {
+        grid.innerHTML = '<p>Ошибка загрузки данных.</p>';
+    }
 }
 
 function renderApplySidebar() {
@@ -306,7 +332,7 @@ function getBotResponse(msg, lang) {
         if (kw.asp.some(k => msg.includes(k))) return 'АСП — Адресная социальная помощь для семей с доходом ниже прожиточного минимума. Вы можете <a href="benefit.html?id=asp" style="color:var(--primary)">прочитать подробнее</a> или подать заявку онлайн через eGov.kz.';
         if (kw.birth.some(k => msg.includes(k))) return 'Пособие при рождении: от 38 МРП на первого ребёнка до 150 МРП на четвёртого и более. <a href="benefit.html?id=birth" style="color:var(--primary)">Подробнее о льготе.</a>';
         if (kw.unemploy.some(k => msg.includes(k))) return 'Пособие по безработице назначается при постановке на учёт в ЦЗН в течение 30 дней после увольнения. <a href="benefit.html?id=unemployment" style="color:var(--primary)">Подробнее.</a>';
-        return 'Я могу помочь с информацией о льготах, подачей заявки или поиском контактов. Уточните ваш вопрос или выберите одну из категорий в разделе «Льготы и пособия».';
+        return 'Я могу помочь с информацией о льготах, подажей заявки или поиском контактов. Уточните ваш вопрос или выберите одну из категорий в разделе «Льготы и пособия».';
     } else {
         if (kw.apply.some(k => msg.includes(k))) return '«<strong>Өтініш беру</strong>» бөліміне өтіңіз. Жеке деректерді толтырыңыз, көмек түрін таңдап, жағдайыңызды сипаттаңыз. Жауап — 1–2 жұмыс күні ішінде.';
         if (kw.benefits.some(k => msg.includes(k))) return '«<strong>Жеңілдіктер</strong>» бөлімінде 12 түрлі жеңілдік санаттар бойынша сүзгіде берілген. Толық ақпарат алу үшін картаны басыңыз.';
@@ -319,24 +345,8 @@ function getBotResponse(msg, lang) {
     }
 }
 
-// ========== TELEGRAM BOT ==========
-const TG_BOT_TOKEN = '8664671759:AAHT_7pxYevgmUaa1LnZeuA6Y7uoobUHwLU';
-const TG_CHAT_ID = '8664671759'; // будет заменено на реальный chat_id после первого сообщения боту
-
-async function sendToTelegram(text) {
-    try {
-        await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TG_CHAT_ID, text, parse_mode: 'HTML' })
-        });
-    } catch (err) {
-        console.warn('Telegram send error:', err);
-    }
-}
-
 // ========== FORM SUBMIT ==========
-function submitApply(e) {
+async function submitApply(e) {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
     const origContent = btn.innerHTML;
@@ -344,54 +354,75 @@ function submitApply(e) {
     btn.disabled = true;
     btn.innerHTML = `<span>${submitting}</span>`;
 
-    const num = 'Q-' + Date.now().toString().slice(-6);
     const name = document.getElementById('fName')?.value.trim() || '—';
     const phone = document.getElementById('fPhone')?.value.trim() || '—';
-    const email = document.getElementById('fEmail')?.value.trim() || '—';
+    const email = document.getElementById('fEmail')?.value.trim() || '';
     const type = document.getElementById('fType');
     const typeText = type ? type.options[type.selectedIndex]?.text : '—';
     const desc = document.getElementById('fDesc')?.value.trim() || '—';
-    const now = new Date().toLocaleDateString(window.LANG === 'kz' ? 'kk-KZ' : 'ru-RU');
 
-    // Send to Telegram
-    const tgText = [
-        `📋 <b>Новая заявка ${num}</b>`,
-        `👤 Имя: ${name}`,
-        `📞 Телефон: ${phone}`,
-        `📧 Email: ${email}`,
-        `🏷 Тип помощи: ${typeText}`,
-        `📝 Описание: ${desc}`,
-        `📅 Дата: ${now}`
-    ].join('\n');
-    sendToTelegram(tgText);
+    const token = localStorage.getItem('qamqor_access_token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
-    setTimeout(() => {
-        // Save to localStorage
-        const apps = JSON.parse(localStorage.getItem('qamqor_apps') || '[]');
-        apps.push({ number: num, type: typeText, date: now, status: 'pending' });
-        localStorage.setItem('qamqor_apps', JSON.stringify(apps));
+    try {
+        const response = await fetch(`${API_BASE}/apply/`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                full_name: name,
+                phone: phone,
+                email: email,
+                help_type: typeText,
+                description: desc
+            })
+        });
+
+        if (!response.ok) throw new Error('API error');
+        const data = await response.json();
+        const appNum = data.application_number || `Q-${Date.now().toString().slice(-6)}`;
 
         // Show modal
         const tr = TRANSLATIONS[window.LANG].modal;
         document.getElementById('modalIconWrap').innerHTML = ICONS.check;
         document.getElementById('modalIconWrap').querySelector('svg').style.cssText = 'width:28px;height:28px';
         document.getElementById('modalTitle').textContent = tr.success;
-        document.getElementById('modalMsg').innerHTML = `${tr.successMsg} <strong>${num}</strong>`;
+        document.getElementById('modalMsg').innerHTML = `${tr.successMsg} <strong>${appNum}</strong>`;
         document.getElementById('modalOverlay').classList.add('active');
 
         // Animate tracker steps
         const steps = document.querySelectorAll('.ts');
         steps.forEach((s, i) => setTimeout(() => s.classList.add('active'), i * 600));
 
+        e.target.reset();
+    } catch (err) {
+        alert('Ошибка при отправке заявки.');
+    } finally {
         btn.innerHTML = origContent;
         btn.disabled = false;
-        e.target.reset();
-    }, 1200);
+    }
 }
 
-function submitVol(e) {
+async function submitVol(e) {
     e.preventDefault();
-    setTimeout(() => {
+    const name = e.target.querySelector('input[type="text"]').value;
+    const phone = e.target.querySelector('input[type="tel"]').value;
+    const role = document.getElementById('vRole').value;
+    const about = e.target.querySelector('textarea').value;
+
+    const token = localStorage.getItem('qamqor_access_token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    try {
+        const response = await fetch(`${API_BASE}/volunteer/`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ name, phone, role, about })
+        });
+
+        if (!response.ok) throw new Error('API error');
+
         const tr = TRANSLATIONS[window.LANG].modal;
         document.getElementById('modalIconWrap').innerHTML = ICONS.check;
         document.getElementById('modalIconWrap').querySelector('svg').style.cssText = 'width:28px;height:28px';
@@ -399,7 +430,9 @@ function submitVol(e) {
         document.getElementById('modalMsg').textContent = tr.volMsg;
         document.getElementById('modalOverlay').classList.add('active');
         e.target.reset();
-    }, 900);
+    } catch (err) {
+        alert('Ошибка при регистрации.');
+    }
 }
 
 function closeModal() {
@@ -420,20 +453,75 @@ window.addEventListener('scroll', () => {
     document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 10);
 });
 
+// ========== PHONE MASK ==========
+function applyPhoneMask(input) {
+    input.addEventListener('input', function (e) {
+        let raw = this.value.replace(/\D/g, '');
+        // Always keep leading 7
+        if (raw.startsWith('8')) raw = '7' + raw.slice(1);
+        if (!raw.startsWith('7')) raw = '7' + raw;
+        raw = raw.slice(0, 11); // max 11 digits with country code
+
+        let formatted = '+7';
+        if (raw.length > 1) formatted += ' (' + raw.slice(1, 4);
+        if (raw.length >= 4) formatted += ')';
+        if (raw.length > 4) formatted += ' ' + raw.slice(4, 7);
+        if (raw.length > 7) formatted += ' ' + raw.slice(7, 9);
+        if (raw.length > 9) formatted += ' ' + raw.slice(9, 11);
+        this.value = formatted;
+    });
+
+    input.addEventListener('keydown', function (e) {
+        if ((e.key === 'Backspace' || e.key === 'Delete') && this.value.length <= 3) {
+            this.value = '+7';
+            e.preventDefault();
+        }
+    });
+
+    input.addEventListener('focus', function () {
+        if (!this.value) this.value = '+7';
+    });
+
+    input.addEventListener('blur', function () {
+        if (this.value === '+7') this.value = '';
+    });
+}
+
+function cleanPhone(val) {
+    return val.replace(/\D/g, '');
+}
+
+// Smart mask for login field (phone OR email)
+function applyLoginMask(input) {
+    input.addEventListener('input', function () {
+        const val = this.value;
+        if (val.includes('@') || (val.length > 0 && !/^[+\d]/.test(val))) return;
+        let raw = val.replace(/\D/g, '');
+        if (!raw) { this.value = ''; return; }
+        if (raw.startsWith('8')) raw = '7' + raw.slice(1);
+        if (!raw.startsWith('7')) raw = '7' + raw;
+        raw = raw.slice(0, 11);
+        let fmt = '+7';
+        if (raw.length > 1) fmt += ' (' + raw.slice(1, 4);
+        if (raw.length >= 4) fmt += ')';
+        if (raw.length > 4) fmt += ' ' + raw.slice(4, 7);
+        if (raw.length > 7) fmt += ' ' + raw.slice(7, 9);
+        if (raw.length > 9) fmt += ' ' + raw.slice(9, 11);
+        this.value = fmt;
+    });
+}
+
 // ========== AUTH MODAL ==========
 function openAuthModal() {
-    const user = JSON.parse(localStorage.getItem('qamqor_user') || 'null');
-    if (user) {
-        // Already logged in → go to profile
+    if (localStorage.getItem('qamqor_access_token')) {
         window.location = 'profile.html';
         return;
     }
-    injectIcon('authLogoIcon', 'shield', 16);
-    injectIcon('authCloseBtn', 'close', 16);
-    // eGov icon (globe)
-    const eg = document.getElementById('authEgovIcon');
-    if (eg) { eg.innerHTML = ICONS.globe; const s = eg.querySelector('svg'); if (s) s.style.cssText = 'width:18px;height:18px'; }
     document.getElementById('authOverlay')?.classList.add('active');
+    const regPh = document.getElementById('regPhone');
+    if (regPh && !regPh._maskApplied) { applyPhoneMask(regPh); regPh._maskApplied = true; }
+    const loginPh = document.getElementById('loginPhone');
+    if (loginPh && !loginPh._maskApplied) { applyLoginMask(loginPh); loginPh._maskApplied = true; }
 }
 
 function closeAuthModal() {
@@ -447,25 +535,40 @@ function switchAuthTab(tab) {
     document.getElementById('tabReg').classList.toggle('active', tab === 'register');
 }
 
-function doLogin() {
-    const phone = document.getElementById('loginPhone')?.value.trim();
+async function doLogin() {
+    const rawInput = document.getElementById('loginPhone')?.value.trim();
     const pass = document.getElementById('loginPass')?.value;
-    if (!phone || !pass) { alert(window.LANG === 'kz' ? 'Барлық өрістерді толтырыңыз' : 'Заполните все поля'); return; }
-
-    // Check stored users
-    const users = JSON.parse(localStorage.getItem('qamqor_users') || '[]');
-    const found = users.find(u => (u.phone === phone || u.email === phone) && u.pass === pass);
-    if (!found) {
-        alert(window.LANG === 'kz' ? 'Қате логин немесе пароль' : 'Неверный логин или пароль');
+    if (!rawInput || !pass) {
+        alert(window.LANG === 'kz' ? 'Барлық өрістерді толтырыңыз' : 'Заполните все поля');
         return;
     }
-    localStorage.setItem('qamqor_user', JSON.stringify(found));
-    closeAuthModal();
-    updateProfileBtn(found);
-    setTimeout(() => window.location = 'profile.html', 300);
+    const btn = document.querySelector('#authLogin .btn-primary');
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+    try {
+        const res = await fetch(`${API_BASE}/auth/login/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ login: rawInput, password: pass }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            alert(data.error || (window.LANG === 'kz' ? 'Қате логин немесе пароль' : 'Неверный логин или пароль'));
+            return;
+        }
+        localStorage.setItem('qamqor_access_token', data.tokens.access);
+        localStorage.setItem('qamqor_refresh_token', data.tokens.refresh);
+        localStorage.setItem('qamqor_user', JSON.stringify(data.user));
+        closeAuthModal();
+        updateProfileBtn(data.user);
+        setTimeout(() => window.location = 'profile.html', 300);
+    } catch (err) {
+        alert('Ошибка соединения с сервером.');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = window.LANG === 'kz' ? 'Кіру' : 'Войти в аккаунт'; }
+    }
 }
 
-function doRegister() {
+async function doRegister() {
     const name = document.getElementById('regName')?.value.trim();
     const phone = document.getElementById('regPhone')?.value.trim();
     const email = document.getElementById('regEmail')?.value.trim();
@@ -474,62 +577,241 @@ function doRegister() {
     if (!name || !phone || !pass) { alert(window.LANG === 'kz' ? 'Міндетті өрістерді толтырыңыз' : 'Заполните обязательные поля'); return; }
     if (!ok) { alert(window.LANG === 'kz' ? 'Деректерді өңдеуге келісім беріңіз' : 'Дайте согласие на обработку данных'); return; }
     if (pass.length < 8) { alert(window.LANG === 'kz' ? 'Пароль кемінде 8 таңба' : 'Пароль минимум 8 символов'); return; }
-
-    const users = JSON.parse(localStorage.getItem('qamqor_users') || '[]');
-    if (users.find(u => u.phone === phone || (email && u.email === email))) {
-        alert(window.LANG === 'kz' ? 'Бұл пайдаланушы тіркелген' : 'Такой пользователь уже зарегистрирован');
-        return;
+    const btn = document.querySelector('#authRegister .btn-primary');
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+    try {
+        const res = await fetch(`${API_BASE}/auth/register/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, email, password: pass }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            const errs = data.errors ? Object.values(data.errors).flat().join('\n') : 'Ошибка регистрации.';
+            alert(errs);
+            return;
+        }
+        localStorage.setItem('qamqor_access_token', data.tokens.access);
+        localStorage.setItem('qamqor_refresh_token', data.tokens.refresh);
+        localStorage.setItem('qamqor_user', JSON.stringify(data.user));
+        closeAuthModal();
+        updateProfileBtn(data.user);
+        setTimeout(() => window.location = 'profile.html', 300);
+    } catch (err) {
+        alert('Ошибка соединения с сервером.');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = window.LANG === 'kz' ? 'Тіркелу' : 'Создать аккаунт'; }
     }
-    const newUser = { name, phone, email, pass, createdAt: new Date().toISOString() };
-    users.push(newUser);
-    localStorage.setItem('qamqor_users', JSON.stringify(users));
-    localStorage.setItem('qamqor_user', JSON.stringify(newUser));
-    closeAuthModal();
-    updateProfileBtn(newUser);
-    setTimeout(() => window.location = 'profile.html', 300);
+}
+
+function updateProfileBtn(user) {
+    const lbl = document.getElementById('profileBtnLabel');
+    const btn = document.getElementById('profileBtn');
+    const name = user?.full_name || user?.name || user?.username;
+    if (lbl && name) lbl.textContent = name.split(' ')[0];
+    if (btn) btn.classList.add('logged-in');
 }
 
 function doEGovLogin() {
-    // Simulate eGov auth — in production this would be an OAuth redirect
-    const mockUser = { name: 'eGov Пайдаланушы', phone: '+7 (705) 000-00-00', email: 'egov@qamqor.kz', source: 'egov' };
-    localStorage.setItem('qamqor_user', JSON.stringify(mockUser));
+    // Close auth modal and show eGov info overlay
     closeAuthModal();
-    updateProfileBtn(mockUser);
-    setTimeout(() => window.location = 'profile.html', 300);
+    showEGovModal();
+}
+
+function showEGovModal() {
+    const overlay = document.getElementById('egovOverlay');
+    if (overlay) { overlay.classList.add('active'); return; }
+
+    // Create eGov info modal dynamically
+    const d = document.createElement('div');
+    d.id = 'egovOverlay';
+    d.className = 'modal-overlay active';
+    d.onclick = () => d.classList.remove('active');
+    d.innerHTML = `
+      <div class="egov-info-modal" onclick="event.stopPropagation()">
+        <div class="egov-logo-row">
+          <div class="egov-logo-badge">eGov.kz</div>
+        </div>
+        <h3>${window.LANG === 'kz' ? 'eGov арқылы кіру' : 'Вход через eGov.kz'}</h3>
+        <p>${window.LANG === 'kz'
+          ? 'eGov.kz — ҚР мемлекеттік порталы. Оны пайдаланып кіру үшін ЭЦҚ (цифрлық қолтаңба) немесе eGov Mobile қосымшасы қажет.'
+          : 'eGov.kz — государственный портал РК. Для входа через eGov необходима ЭЦП (электронная цифровая подпись) или приложение eGov Mobile.'
+        }</p>
+        <p style="font-size:0.8rem;color:#9ca3af">${window.LANG === 'kz'
+          ? 'Интеграция іске асырылу үстінде. Қазір тіркелу арқылы кіруіңізді сұраймыз.'
+          : 'Интеграция находится в разработке. Пока что, пожалуйста, войдите или зарегистрируйтесь на Qamqor.'}</p>
+        <div class="egov-btn-group">
+          <a href="https://egov.kz" target="_blank" class="egov-btn-primary">Перейти на eGov.kz</a>
+          <button class="egov-btn-secondary" onclick="document.getElementById('egovOverlay').classList.remove('active'); openAuthModal()">
+            ${window.LANG === 'kz' ? 'Тіркелу' : 'Зарегистрироваться'}
+          </button>
+        </div>
+      </div>`;
+    document.body.appendChild(d);
 }
 
 function showReset() {
     alert(window.LANG === 'kz' ? 'Телефонмен хабарласыңыз: +7 775 488 23 43' : 'Обратитесь по телефону: +7 775 488 23 43');
 }
 
-function updateProfileBtn(user) {
-    const btn = document.getElementById('profileBtn');
-    const lbl = document.getElementById('profileBtnLabel');
-    if (btn) btn.classList.add('logged-in');
-    if (lbl && user?.name) lbl.textContent = user.name.split(' ')[0];
-}
-
-// On load — init everything
 document.addEventListener('DOMContentLoaded', () => {
-    renderAll();
+    // Only run full render on index page (not profile/benefit pages)
+    const isIndexPage = !window.location.pathname.includes('profile.html') &&
+                        !window.location.pathname.includes('benefit.html') &&
+                        !window.location.pathname.includes('volunteer-portal.html');
 
-    // Restore logged-in state
-    const user = JSON.parse(localStorage.getItem('qamqor_user') || 'null');
-    if (user) updateProfileBtn(user);
+    if (isIndexPage) {
+        renderAll();
+    } else {
+        // On other pages still inject icons and apply translations
+        applyI18n();
+        const li = document.getElementById('langIcon');
+        if (li) injectIcon('langIcon', 'globe', 14);
+    }
 
-    // Scroll fade-in animation
-    const obs = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; } });
-    }, { threshold: 0.1 });
+    // Restore auth state from JWT on all pages
+    const token = localStorage.getItem('qamqor_access_token');
+    if (token) {
+        const user = JSON.parse(localStorage.getItem('qamqor_user') || 'null');
+        if (user) updateProfileBtn(user);
+    }
 
-    setTimeout(() => {
-        document.querySelectorAll('.qa-card, .benefit-card, .role-card, .contact-card').forEach(el => {
-            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(16px)';
-            obs.observe(el);
-        });
-    }, 100);
+    if (isIndexPage) {
+        document.querySelectorAll('input[type="tel"]').forEach(applyPhoneMask);
+
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'none'; } });
+        }, { threshold: 0.1 });
+
+        setTimeout(() => {
+            document.querySelectorAll('.qa-card, .benefit-card, .role-card, .contact-card').forEach(el => {
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(16px)';
+                obs.observe(el);
+            });
+        }, 100);
+    }
 });
 
+function closeModal() {
+    document.getElementById('modalOverlay')?.classList.remove('active');
+}
 
+// ========== NAV UTILS ==========
+function scrollToId(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleMenu() {
+    document.getElementById('navLinks')?.classList.toggle('open');
+}
+
+window.addEventListener('scroll', () => {
+    document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// ========== PHONE MASK ==========
+function applyPhoneMask(input) {
+    input.addEventListener('input', function (e) {
+        let raw = this.value.replace(/\D/g, '');
+        // Always keep leading 7
+        if (raw.startsWith('8')) raw = '7' + raw.slice(1);
+        if (!raw.startsWith('7')) raw = '7' + raw;
+        raw = raw.slice(0, 11); // max 11 digits with country code
+
+        let formatted = '+7';
+        if (raw.length > 1) formatted += ' (' + raw.slice(1, 4);
+        if (raw.length >= 4) formatted += ')';
+        if (raw.length > 4) formatted += ' ' + raw.slice(4, 7);
+        if (raw.length > 7) formatted += ' ' + raw.slice(7, 9);
+        if (raw.length > 9) formatted += ' ' + raw.slice(9, 11);
+        this.value = formatted;
+    });
+
+    input.addEventListener('keydown', function (e) {
+        // Allow deletion — clear to +7 if backspacing past prefix
+        if ((e.key === 'Backspace' || e.key === 'Delete') && this.value.length <= 3) {
+            this.value = '+7';
+            e.preventDefault();
+        }
+    });
+
+    input.addEventListener('focus', function () {
+        if (!this.value) this.value = '+7';
+    });
+
+    input.addEventListener('blur', function () {
+        if (this.value === '+7') this.value = '';
+    });
+}
+
+function cleanPhone(val) {
+    return val.replace(/\D/g, '');
+}
+
+// Smart mask for login field (phone OR email)
+function applyLoginMask(input) {
+    input.addEventListener('input', function () {
+        const val = this.value;
+        // If it looks like an email, don't apply phone mask
+        if (val.includes('@') || (val.length > 0 && !/^[+\d]/.test(val))) return;
+        // Otherwise apply phone mask
+        let raw = val.replace(/\D/g, '');
+        if (!raw) { this.value = ''; return; }
+        if (raw.startsWith('8')) raw = '7' + raw.slice(1);
+        if (!raw.startsWith('7')) raw = '7' + raw;
+        raw = raw.slice(0, 11);
+        let fmt = '+7';
+        if (raw.length > 1) fmt += ' (' + raw.slice(1, 4);
+        if (raw.length >= 4) fmt += ')';
+        if (raw.length > 4) fmt += ' ' + raw.slice(4, 7);
+        if (raw.length > 7) fmt += ' ' + raw.slice(7, 9);
+        if (raw.length > 9) fmt += ' ' + raw.slice(9, 11);
+        this.value = fmt;
+    });
+}
+
+
+// ========== NEWS RENDERING ==========
+async function renderNews() {
+    const grid = document.getElementById('newsGrid');
+    if (!grid) return;
+    try {
+        const res = await fetch(`${API_BASE}/news/?limit=6`);
+        const news = await res.json();
+        if (!news.length) {
+            grid.innerHTML = '<p class="news-loading">Новостей пока нет.</p>';
+            return;
+        }
+        const lang = window.LANG;
+        const catColors = { news:'news', announcement:'announcement', law:'law', event:'event' };
+        const catLabels = {
+            ru: { news:'Новости', announcement:'Объявление', law:'Законодательство', event:'Мероприятие' },
+            kz: { news:'Жаңалықтар', announcement:'Хабарлама', law:'Заңнама', event:'Іс-шара' }
+        };
+        grid.innerHTML = news.map(item => {
+            const title = lang === 'kz' ? item.title_kz : item.title_ru;
+            const body = lang === 'kz' ? item.body_kz : item.body_ru;
+            const catKey = item.category;
+            const catLabel = catLabels[lang]?.[catKey] || item.category_display;
+            const date = new Date(item.created_at).toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU', {day:'numeric',month:'long'});
+            const sourceBtn = item.source_url
+                ? `<a href="${item.source_url}" target="_blank" class="news-source-link">🔗 Источник</a>`
+                : '<span></span>';
+            return `
+              <div class="news-card">
+                <div class="news-meta">
+                  <span class="news-badge ${catColors[catKey]}">${catLabel}</span>
+                  <span class="news-date">${date}</span>
+                </div>
+                <div class="news-title">${title}</div>
+                <div class="news-body">${body}</div>
+                <div class="news-footer">${sourceBtn}</div>
+              </div>`;
+        }).join('');
+    } catch(e) {
+        grid.innerHTML = '<p class="news-loading">Не удалось загрузить новости.</p>';
+    }
+}

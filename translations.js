@@ -21,7 +21,7 @@ const TRANSLATIONS = {
         apply: {
             tag: 'Онлайн-заявка', title: 'Подайте заявку', titleAccent: 'на помощь',
             desc: 'Специалист свяжется с вами в течение 1–2 рабочих дней',
-            name: 'Полное имя', namePh: 'Иванов Иван Иванович',
+            name: 'Полное имя', namePh: 'Ваше имя',
             phone: 'Телефон', phonePh: '+7 (___) ___-__-__',
             email: 'Email', emailPh: 'example@mail.com',
             helpType: 'Тип помощи', helpTypePh: '— Выберите тип помощи —',
@@ -119,7 +119,7 @@ const TRANSLATIONS = {
         apply: {
             tag: 'Онлайн өтініш', title: 'Өтініш беріңіз', titleAccent: 'онлайн',
             desc: 'Маман 1–2 жұмыс күні ішінде сізбен хабарласады',
-            name: 'Толық аты-жөні', namePh: 'Иванов Иван Иванович',
+            name: 'Толық аты-жөні', namePh: 'Аты-жөніңіз',
             phone: 'Телефон', phonePh: '+7 (___) ___-__-__',
             email: 'Email', emailPh: 'example@mail.com',
             helpType: 'Көмек түрі', helpTypePh: '— Көмек түрін таңдаңыз —',

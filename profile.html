@@ -2,129 +2,444 @@
 <html lang="ru">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Мой профиль — Qamqor</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Мой профиль — Qamqor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="style.css?v=2" />
+  <style>
+    /* ── Profile Page Styles ── */
+    .profile-page { min-height: 100vh; background: var(--bg); padding-top: 80px; }
+    .profile-container { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+
+    /* Header card */
+    .profile-hero { background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%); border-radius: 20px; padding: 36px; display: flex; align-items: center; gap: 28px; color: #fff; margin-bottom: 28px; box-shadow: 0 8px 32px rgba(37,99,235,.3); }
+    .profile-avatar-big { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; background: rgba(255,255,255,.2); border: 3px solid rgba(255,255,255,.5); flex-shrink: 0; }
+    .profile-hero-info { flex: 1; }
+    .profile-hero-info h2 { font-size: 1.6rem; font-weight: 800; margin: 0 0 4px; }
+    .profile-hero-info p { opacity: .8; margin: 0 0 16px; font-size: .95rem; }
+    .profile-hero-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+    .profile-badge { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 20px; padding: 4px 14px; font-size: .82rem; font-weight: 600; backdrop-filter: blur(4px); }
+    .profile-badge.green { background: rgba(16,185,129,.25); border-color: #10b981; }
+    .profile-hero-actions { display: flex; gap: 12px; flex-direction: column; align-items: flex-end; }
+    .btn-white { background: #fff; color: var(--primary); border: none; border-radius: 12px; padding: 10px 20px; font-size: .9rem; font-weight: 700; cursor: pointer; transition: all .2s; }
+    .btn-white:hover { background: #f0f4ff; transform: translateY(-1px); }
+    .btn-danger-outline { background: transparent; color: #ef4444; border: 1.5px solid #ef4444; border-radius: 12px; padding: 10px 20px; font-size: .9rem; font-weight: 700; cursor: pointer; transition: all .2s; }
+    .btn-danger-outline:hover { background: #fef2f2; }
+
+    /* Stats row */
+    .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .pstat-card { background: var(--surface); border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,.06); border: 1px solid var(--border); }
+    .pstat-n { font-size: 2rem; font-weight: 800; color: var(--primary); display: block; }
+    .pstat-l { font-size: .82rem; color: var(--text-muted); }
+
+    /* Tabs */
+    .profile-tabs { display: flex; gap: 4px; background: var(--surface); border-radius: 14px; padding: 4px; border: 1px solid var(--border); margin-bottom: 24px; width: fit-content; }
+    .ptab { padding: 8px 20px; border-radius: 10px; border: none; background: transparent; font-size: .9rem; font-weight: 600; cursor: pointer; color: var(--text-muted); transition: all .2s; }
+    .ptab.active { background: var(--primary); color: #fff; }
+
+    /* Applications list */
+    .app-list { display: flex; flex-direction: column; gap: 12px; }
+    .app-card { background: var(--surface); border-radius: 16px; padding: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.05); transition: box-shadow .2s; }
+    .app-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+    .app-card-icon { width: 44px; height: 44px; border-radius: 12px; background: #eff6ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .app-card-body { flex: 1; }
+    .app-card-body h4 { font-size: .95rem; font-weight: 700; margin: 0 0 4px; color: var(--text); }
+    .app-card-body p { font-size: .82rem; color: var(--text-muted); margin: 0; }
+    .app-card-right { text-align: right; }
+    .app-card-date { font-size: .78rem; color: var(--text-muted); margin-top: 6px; }
+
+    .status-pill { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: .78rem; font-weight: 700; }
+    .status-pill.pending { background: #fef3c7; color: #92400e; }
+    .status-pill.processing { background: #dbeafe; color: #1e40af; }
+    .status-pill.assigned { background: #ede9fe; color: #5b21b6; }
+    .status-pill.done { background: #d1fae5; color: #065f46; }
+    .status-pill.rejected { background: #fee2e2; color: #991b1b; }
+
+    /* Volunteer card */
+    .vol-status-card { background: var(--surface); border-radius: 16px; padding: 24px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+    .vol-status-card h3 { margin: 0 0 16px; font-size: 1.1rem; }
+    .vol-info-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; font-size: .9rem; }
+    .vol-info-row span:first-child { color: var(--text-muted); min-width: 90px; }
+
+    /* Edit modal */
+    .modal-label { font-size: .82rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; display: block; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .empty-state svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: .4; }
+    .empty-state h3 { font-size: 1.1rem; margin: 0 0 8px; color: var(--text); }
+    .empty-state p { font-size: .9rem; margin: 0 0 20px; }
+
+    /* Loading */
+    .loading-spinner { display: flex; align-items: center; justify-content: center; padding: 60px; color: var(--text-muted); gap: 12px; font-size: .95rem; }
+
+    @media (max-width: 640px) {
+      .profile-hero { flex-direction: column; align-items: flex-start; }
+      .profile-hero-actions { align-items: flex-start; flex-direction: row; }
+      .profile-stats { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
 </head>
 
-<body>
-    <nav class="navbar" id="navbar">
-        <div class="nav-inner">
-            <a href="index.html" class="nav-logo">
-                <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" /><span>Qamqor</span>
-            </a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html#apply" data-i="nav.apply">Подать заявку</a></li>
-                <li><a href="index.html#benefits" data-i="nav.benefits">Льготы</a></li>
-                <li><a href="index.html#contacts" data-i="nav.contacts">Контакты</a></li>
-            </ul>
-            <div class="nav-right">
-                <button class="lang-btn" onclick="toggleLang()"><span id="langIcon"></span><span
-                        id="langLabel">ҚАЗ</span></button>
-            </div>
-            <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
-        </div>
-    </nav>
-
-    <div class="profile-wrapper">
-        <!-- Profile Header -->
-        <div class="profile-header-card">
-            <div class="profile-avatar" id="profileAvatar"></div>
-            <div class="profile-info">
-                <h2 id="profileName">Гость</h2>
-                <p id="profileEmail">Заполните профиль для полного доступа</p>
-            </div>
-            <div class="profile-actions">
-                <button class="edit-btn" id="editBtn" onclick="openEditModal()">
-                    <span id="editIcon"></span>
-                    <span data-i="profile.editBtn">Редактировать</span>
-                </button>
-                <button class="btn-primary" onclick="window.location='index.html#apply'">
-                    <span data-i="nav.apply">Подать заявку</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- My Applications -->
-        <div class="profile-section-card">
-            <h3 data-i="profile.myApps">Мои заявки</h3>
-            <div id="appsList"></div>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div class="modal-overlay" id="editOverlay" onclick="closeEditModal()">
-        <div class="modal" onclick="event.stopPropagation()" style="max-width:460px">
-            <h3 style="margin-bottom:20px" data-i="profile.editBtn">Редактировать профиль</h3>
-            <div class="form-group"><label data-i="apply.name">Имя</label><input type="text" id="editName"
-                    placeholder="Ваше имя" /></div>
-            <div class="form-group"><label data-i="apply.email">Email</label><input type="email" id="editEmail"
-                    placeholder="email@mail.com" /></div>
-            <div class="form-group"><label data-i="apply.phone">Телефон</label><input type="tel" id="editPhone"
-                    placeholder="+7 (___) ___-__-__" /></div>
-            <div style="display:flex;gap:10px;margin-top:8px">
-                <button class="btn-outline w-full" onclick="closeEditModal()" data-i="modal.close">Отмена</button>
-                <button class="btn-primary w-full" onclick="saveProfile()">Сохранить</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="translations.js"></script>
-    <script src="data.js"></script>
-    <script src="main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const lang = window.LANG || 'ru';
-            const tr = TRANSLATIONS[lang].profile;
-
-            // Load profile from localStorage
-            const profile = JSON.parse(localStorage.getItem('qamqor_profile') || '{}');
-            document.getElementById('profileName').textContent = profile.name || (lang === 'ru' ? 'Гость' : 'Қонақ');
-            document.getElementById('profileEmail').textContent = profile.email || (lang === 'ru' ? 'Заполните профиль для полного доступа' : 'Толық қол жеткізу үшін профильді толтырыңыз');
-            if (profile.name) {
-                document.getElementById('editName').value = profile.name;
-                document.getElementById('editEmail').value = profile.email || '';
-                document.getElementById('editPhone').value = profile.phone || '';
-            }
-
-            // Load applications
-            const apps = JSON.parse(localStorage.getItem('qamqor_apps') || '[]');
-            const list = document.getElementById('appsList');
-
-            if (apps.length === 0) {
-                list.innerHTML = `
-      <div class="no-apps">
-        ${ICONS.document}
-        <p>${tr.noApps}</p>
-        <a href="index.html#apply"><button class="btn-primary">${tr.submitFirst}</button></a>
-      </div>`;
-            } else {
-                const statusMap = { pending: tr.statuses.pending, processing: tr.statuses.processing, done: tr.statuses.done };
-                list.innerHTML = apps.reverse().map((app, i) => `
-      <div class="app-item">
-        <span class="app-num">${tr.appNumber} #${app.number}</span>
-        <span class="app-type">${app.type}</span>
-        <span class="app-date">${app.date}</span>
-        <span class="badge-status ${app.status}">${statusMap[app.status]}</span>
+<body class="profile-page">
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" /><span>Qamqor</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#apply" data-i="nav.apply">Подать заявку</a></li>
+        <li><a href="index.html#benefits" data-i="nav.benefits">Льготы</a></li>
+        <li><a href="index.html#volunteers" data-i="nav.volunteers">Волонтёрам</a></li>
+        <li><a href="index.html#contacts" data-i="nav.contacts">Контакты</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="lang-btn" onclick="toggleLang()"><span id="langIcon"></span><span id="langLabel">ҚАЗ</span></button>
       </div>
-    `).join('');
-            }
+      <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
 
-            window.openEditModal = () => document.getElementById('editOverlay').classList.add('active');
-            window.closeEditModal = () => document.getElementById('editOverlay').classList.remove('active');
-            window.saveProfile = () => {
-                const p = { name: document.getElementById('editName').value, email: document.getElementById('editEmail').value, phone: document.getElementById('editPhone').value };
-                localStorage.setItem('qamqor_profile', JSON.stringify(p));
-                document.getElementById('profileName').textContent = p.name || (lang === 'ru' ? 'Гость' : 'Қонақ');
-                document.getElementById('profileEmail').textContent = p.email || '';
-                closeEditModal();
-            };
+  <div class="profile-container">
+    <!-- Loading state -->
+    <div id="loadingState" class="loading-spinner">
+      <div style="width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite"></div>
+      Загрузка профиля...
+    </div>
+
+    <!-- Not logged in -->
+    <div id="notLoggedState" style="display:none;text-align:center;padding:80px 20px">
+      <div style="font-size:4rem;margin-bottom:20px">🔒</div>
+      <h2 style="margin:0 0 12px">Войдите в аккаунт</h2>
+      <p style="color:var(--text-muted);margin:0 0 28px">Для просмотра профиля и заявок необходимо авторизоваться.</p>
+      <button class="btn-primary" onclick="window.location='index.html'">Перейти на главную</button>
+    </div>
+
+    <!-- Logged in content -->
+    <div id="profileContent" style="display:none">
+      <!-- Hero -->
+      <div class="profile-hero">
+        <div class="profile-avatar-big" id="avatarBig">?</div>
+        <div class="profile-hero-info">
+          <h2 id="heroName">—</h2>
+          <p id="heroEmail">—</p>
+          <div class="profile-hero-badges">
+            <span class="profile-badge" id="heroBadgePhone" style="display:none"></span>
+            <span class="profile-badge green" id="heroBadgeVol" style="display:none">🤝 Волонтёр</span>
+          </div>
+        </div>
+        <div class="profile-hero-actions">
+          <button class="btn-white" onclick="openEditModal()">✏️ Редактировать</button>
+          <button class="btn-danger-outline" onclick="doLogout()">Выйти</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="profile-stats">
+        <div class="pstat-card">
+          <span class="pstat-n" id="statTotal">0</span>
+          <span class="pstat-l" data-i="profile.myApps">Всего заявок</span>
+        </div>
+        <div class="pstat-card">
+          <span class="pstat-n" id="statDone">0</span>
+          <span class="pstat-l">Выполнено</span>
+        </div>
+        <div class="pstat-card">
+          <span class="pstat-n" id="statPending">0</span>
+          <span class="pstat-l">На рассмотрении</span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="profile-tabs">
+        <button class="ptab active" onclick="switchTab('apps', this)">📋 Мои заявки</button>
+        <button class="ptab" onclick="switchTab('volunteer', this)">🤝 Волонтёрство</button>
+        <button class="ptab" onclick="switchTab('settings', this)">⚙️ Настройки</button>
+      </div>
+
+      <!-- Tab: Applications -->
+      <div id="tabApps">
+        <div class="app-list" id="appsList">
+          <div class="loading-spinner">Загрузка заявок...</div>
+        </div>
+      </div>
+
+      <!-- Tab: Volunteer -->
+      <div id="tabVolunteer" style="display:none">
+        <div id="volunteerContent"></div>
+      </div>
+
+      <!-- Tab: Settings -->
+      <div id="tabSettings" style="display:none">
+        <div style="background:var(--surface);border-radius:16px;padding:28px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05)">
+          <h3 style="margin:0 0 24px">Настройки профиля</h3>
+          <div class="form-row">
+            <div class="form-group"><label class="modal-label">Имя</label><input type="text" id="setFirstName" placeholder="Имя" /></div>
+            <div class="form-group"><label class="modal-label">Фамилия</label><input type="text" id="setLastName" placeholder="Фамилия" /></div>
+          </div>
+          <div class="form-group"><label class="modal-label">Email</label><input type="email" id="setEmail" placeholder="email@mail.com" /></div>
+          <div class="form-group"><label class="modal-label">Телефон</label><input type="tel" id="setPhone" placeholder="+7 (___) ___-__-__" /></div>
+          <div class="form-group"><label class="modal-label">ИИН</label><input type="text" id="setIin" placeholder="000000000000" maxlength="12" /></div>
+          <div class="form-group"><label class="modal-label">Адрес</label><input type="text" id="setAddress" placeholder="г. Алматы, ул. ..." /></div>
+          <div class="form-group">
+            <label class="modal-label">Язык интерфейса</label>
+            <select id="setLanguage">
+              <option value="ru">Русский</option>
+              <option value="kz">Қазақша</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="saveSettings()" style="margin-top:8px">Сохранить изменения</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success toast -->
+  <div id="toast" style="position:fixed;bottom:24px;right:24px;background:#10b981;color:#fff;padding:14px 24px;border-radius:12px;font-weight:600;font-size:.9rem;display:none;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2)"></div>
+
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+  <script src="translations.js?v=2"></script>
+  <script src="data.js?v=2"></script>
+  <script src="main.js?v=2"></script>
+  <script>
+    const API = '/api';
+    let currentUser = null;
+
+    function getToken() {
+      return localStorage.getItem('qamqor_access_token');
+    }
+
+    function authHeaders() {
+      return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` };
+    }
+
+    function showToast(msg, color = '#10b981') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.background = color;
+      t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    function getInitials(name) {
+      return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2) || '?';
+    }
+
+    function getStatusPill(status, display) {
+      return `<span class="status-pill ${status}">${display}</span>`;
+    }
+
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tabApps').style.display = tab === 'apps' ? '' : 'none';
+      document.getElementById('tabVolunteer').style.display = tab === 'volunteer' ? '' : 'none';
+      document.getElementById('tabSettings').style.display = tab === 'settings' ? '' : 'none';
+    }
+
+    function formatDate(iso) {
+      return new Date(iso).toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+    }
+
+    async function loadProfile() {
+      const token = getToken();
+      document.getElementById('loadingState').style.display = 'flex';
+      document.getElementById('notLoggedState').style.display = 'none';
+      document.getElementById('profileContent').style.display = 'none';
+
+      if (!token) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('notLoggedState').style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API}/auth/me/`, { headers: authHeaders() });
+        if (res.status === 401) {
+          // Try refresh
+          const refreshed = await tryRefresh();
+          if (!refreshed) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('notLoggedState').style.display = 'block';
+            return;
+          }
+          return loadProfile();
+        }
+        currentUser = await res.json();
+        renderProfile(currentUser);
+        loadApplications();
+        loadVolunteerStatus();
+      } catch (err) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('notLoggedState').style.display = 'block';
+      }
+    }
+
+    async function tryRefresh() {
+      const refresh = localStorage.getItem('qamqor_refresh_token');
+      if (!refresh) return false;
+      try {
+        const res = await fetch(`${API}/auth/refresh/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh })
         });
-    </script>
+        if (!res.ok) return false;
+        const data = await res.json();
+        localStorage.setItem('qamqor_access_token', data.access);
+        return true;
+      } catch { return false; }
+    }
+
+    function renderProfile(user) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('profileContent').style.display = 'block';
+
+      const name = user.full_name || user.username;
+      document.getElementById('heroName').textContent = name;
+      document.getElementById('heroEmail').textContent = user.email || '—';
+      document.getElementById('avatarBig').textContent = getInitials(name);
+
+      if (user.profile?.phone) {
+        const phoneBadge = document.getElementById('heroBadgePhone');
+        phoneBadge.textContent = '📞 ' + user.profile.phone;
+        phoneBadge.style.display = 'inline-block';
+      }
+      if (user.is_volunteer) {
+        document.getElementById('heroBadgeVol').style.display = 'inline-block';
+      }
+
+      // Fill settings tab
+      document.getElementById('setFirstName').value = user.first_name || '';
+      document.getElementById('setLastName').value = user.last_name || '';
+      document.getElementById('setEmail').value = user.email || '';
+      document.getElementById('setPhone').value = user.profile?.phone || '';
+      document.getElementById('setIin').value = user.profile?.iin || '';
+      document.getElementById('setAddress').value = user.profile?.address || '';
+      document.getElementById('setLanguage').value = user.profile?.language || window.LANG;
+    }
+
+    async function loadApplications() {
+      const res = await fetch(`${API}/my/applications/`, { headers: authHeaders() });
+      const apps = await res.json();
+      
+      // Update stats
+      document.getElementById('statTotal').textContent = apps.length;
+      document.getElementById('statDone').textContent = apps.filter(a => a.status === 'done').length;
+      document.getElementById('statPending').textContent = apps.filter(a => a.status === 'pending').length;
+
+      const list = document.getElementById('appsList');
+      if (apps.length === 0) {
+        list.innerHTML = `<div class="empty-state">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <h3>У вас нет заявок</h3>
+          <p>Подайте первую заявку на помощь</p>
+          <a href="index.html#apply"><button class="btn-primary">Подать заявку</button></a>
+        </div>`;
+        return;
+      }
+
+      list.innerHTML = apps.map(app => `
+        <div class="app-card">
+          <div class="app-card-icon">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#2563eb" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div class="app-card-body">
+            <h4>${app.help_type}</h4>
+            <p>№ ${app.application_number} · ${app.description.slice(0, 60)}${app.description.length > 60 ? '...' : ''}</p>
+            ${app.admin_note ? `<p style="color:#10b981;margin-top:4px;font-size:.82rem">💬 ${app.admin_note}</p>` : ''}
+          </div>
+          <div class="app-card-right">
+            ${getStatusPill(app.status, app.status_display)}
+            <div class="app-card-date">${formatDate(app.created_at)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function loadVolunteerStatus() {
+      const res = await fetch(`${API}/my/volunteer/`, { headers: authHeaders() });
+      const container = document.getElementById('volunteerContent');
+      if (res.status === 404) {
+        container.innerHTML = `<div class="empty-state">
+          <div style="font-size:3rem;margin-bottom:16px">🤝</div>
+          <h3>Вы не зарегистрированы как волонтёр</h3>
+          <p>Станьте частью команды и помогайте людям</p>
+          <a href="index.html#volunteers"><button class="btn-primary">Стать волонтёром</button></a>
+        </div>`;
+        return;
+      }
+      const vol = await res.json();
+      const colors = { new: '#f59e0b', active: '#10b981', inactive: '#6b7280' };
+      container.innerHTML = `
+        <div class="vol-status-card">
+          <h3>Ваш статус волонтёра</h3>
+          <div class="vol-info-row"><span>Направление:</span><strong>${vol.role}</strong></div>
+          <div class="vol-info-row"><span>Статус:</span>
+            <span style="background:${colors[vol.status]};color:#fff;padding:3px 12px;border-radius:20px;font-size:.82rem;font-weight:700">${vol.status_display}</span>
+          </div>
+          <div class="vol-info-row"><span>Дата подачи:</span><span>${formatDate(vol.created_at)}</span></div>
+          ${vol.about ? `<div class="vol-info-row"><span>О себе:</span><span>${vol.about}</span></div>` : ''}
+        </div>`;
+    }
+
+    async function saveSettings() {
+      const data = {
+        first_name: document.getElementById('setFirstName').value,
+        last_name: document.getElementById('setLastName').value,
+        email: document.getElementById('setEmail').value,
+        phone: document.getElementById('setPhone').value,
+        iin: document.getElementById('setIin').value,
+        address: document.getElementById('setAddress').value,
+        language: document.getElementById('setLanguage').value,
+      };
+      const res = await fetch(`${API}/auth/me/`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        const result = await res.json();
+        currentUser = result.user;
+        renderProfile(currentUser);
+        window.LANG = data.language;
+        localStorage.setItem('qamqor_lang', data.language);
+        showToast('Профиль сохранён ✓');
+      } else {
+        showToast('Ошибка при сохранении', '#ef4444');
+      }
+    }
+
+    function openEditModal() {
+      switchTab('settings', document.querySelectorAll('.ptab')[2]);
+    }
+
+    async function doLogout() {
+      const refresh = localStorage.getItem('qamqor_refresh_token');
+      try {
+        await fetch(`${API}/auth/logout/`, {
+          method: 'POST',
+          headers: authHeaders(),
+          body: JSON.stringify({ refresh })
+        });
+      } catch {}
+      localStorage.removeItem('qamqor_access_token');
+      localStorage.removeItem('qamqor_refresh_token');
+      localStorage.removeItem('qamqor_user');
+      window.location = 'index.html';
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      const li = document.getElementById('langIcon');
+      if (li && ICONS) li.innerHTML = ICONS.globe || '';
+      loadProfile();
+    });
+  </script>
 </body>
 
 </html>

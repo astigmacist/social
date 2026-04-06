@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="logo.png" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=2" />
 </head>
 
 <body>
@@ -47,8 +47,6 @@
   <section id="hero" class="hero">
     <div class="hero-inner hero-centered">
       <div class="hero-content">
-        <div class="hero-tag"><span class="hero-dot"></span><span data-i="hero.badge">Бесплатная социальная
-            поддержка</span></div>
         <h1 class="hero-title">
           <span data-i="hero.title">Социальная помощь для</span><br />
           <span class="accent" data-i="hero.titleAccent">каждого гражданина</span>
@@ -115,7 +113,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label data-i="apply.name">Полное имя</label>
-                <input type="text" id="fName" data-ph="apply.namePh" placeholder="Иванов Иван Иванович" required />
+                <input type="text" id="fName" data-i-ph="apply.namePh" placeholder="" required />
               </div>
               <div class="form-group">
                 <label data-i="apply.phone">Телефон</label>
@@ -144,7 +142,7 @@
             </div>
             <div class="form-group">
               <label data-i="apply.desc2">Опишите ситуацию</label>
-              <textarea id="fDesc" data-ph="apply.descPh" placeholder="Расскажите подробно о вашей ситуации..."
+              <textarea id="fDesc" data-i-ph="apply.descPh" placeholder="Расскажите подробно о вашей ситуации..."
                 required></textarea>
             </div>
             <div class="form-check">
@@ -190,8 +188,7 @@
         <div class="vol-form">
           <h3 data-i="volunteers.formTitle">Записаться волонтёром</h3>
           <form id="volForm" onsubmit="submitVol(event)">
-            <div class="form-group"><label data-i="volunteers.fName">Ваше имя</label><input type="text" required
-                data-ph="volunteers.fName" placeholder="Ваше имя" /></div>
+            <div class="form-group"><label data-i="volunteers.fName">Ваше имя</label><input type="text" required data-i-ph="apply.namePh" placeholder="" /></div>
             <div class="form-group"><label data-i="volunteers.fPhone">Телефон</label><input type="tel" required
                 placeholder="+7 (___) ___-__-__" /></div>
             <div class="form-group">
@@ -218,6 +215,22 @@
         <h2 class="sec-title" data-i="contacts.title">Свяжитесь с нами</h2>
       </div>
       <div class="contacts-grid" id="contactsGrid"></div>
+    </div>
+  </section>
+
+  <!-- NEWS SECTION -->
+  <section id="news" class="section">
+    <div class="container">
+      <div class="sec-hdr">
+        <span class="sec-tag">Актуально</span>
+        <h2 class="sec-title"><span data-i="news.title">Новости и</span> <span class="accent"
+            data-i="news.titleAccent">объявления</span></h2>
+        <p class="sec-desc" data-i="news.desc">Последние изменения в законодательстве и программах социальной поддержки
+        </p>
+      </div>
+      <div class="news-grid" id="newsGrid">
+        <div class="news-loading">Загрузка новостей...</div>
+      </div>
     </div>
   </section>
 
@@ -296,7 +309,7 @@
       <div id="authRegister" style="display:none">
         <div class="form-group">
           <label data-i="apply.name">Полное имя</label>
-          <input type="text" id="regName" placeholder="Иванов Иван Иванович" />
+          <input type="text" id="regName" data-i-ph="apply.namePh" placeholder="" />
         </div>
         <div class="form-group">
           <label data-i="apply.phone">Телефон</label>
@@ -347,9 +360,10 @@
     </div>
   </div>
 
-  <script src="translations.js"></script>
-  <script src="data.js"></script>
-  <script src="main.js"></script>
+  <!-- Language toggle overlay will be injected by main.js -->
+  <script src="translations.js?v=2"></script>
+  <script src="data.js?v=2"></script>
+  <script src="main.js?v=2"></script>
 </body>
 
 </html>

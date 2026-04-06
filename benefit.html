@@ -7,7 +7,7 @@
   <title>Льгота — Qamqor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=2" />
 </head>
 
 <body>
@@ -75,80 +75,88 @@
     </div>
   </div>
 
-  <script src="translations.js"></script>
-  <script src="data.js"></script>
-  <script src="main.js"></script>
+  <script src="translations.js?v=2"></script>
+  <script src="data.js?v=2"></script>
+  <script src="main.js?v=2"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const params = new URLSearchParams(location.search);
       const id = params.get('id');
-      const benefit = BENEFITS.find(b => b.id === id);
       const lang = window.LANG || 'ru';
 
-      if (!benefit) {
+      if (!id) return;
+
+      try {
+        const res = await fetch(`/api/benefits/${id}/`);
+        if (!res.ok) throw new Error('Not found');
+        const benefit = await res.json();
+
+        // Update page title
+        document.title = (lang === 'ru' ? benefit.title_ru : benefit.title_kz) + ' — Qamqor';
+
+        // Render detail card
+        const docsList = (lang === 'ru' ? benefit.docs_ru : benefit.docs_kz).split(',').map(d => `<li>${d.trim()}</li>`).join('');
+        const t = (k) => (TRANSLATIONS[lang]?.benefits?.[k] || k);
+
+        document.getElementById('detailCard').innerHTML = `
+          <div class="detail-head">
+            <div class="detail-icon">${ICONS[benefit.icon] || ICONS.shield}</div>
+            <div>
+              <div class="detail-badge">${lang === 'ru' ? benefit.badge_ru : benefit.badge_kz}</div>
+              <h1>${lang === 'ru' ? benefit.title_ru : benefit.title_kz}</h1>
+            </div>
+          </div>
+          <div class="detail-section">
+            <h3>${lang === 'ru' ? 'О льготе' : 'Жеңілдік туралы'}</h3>
+            <p>${lang === 'ru' ? benefit.short_desc_ru : benefit.short_desc_kz}</p>
+          </div>
+          <div class="detail-section">
+            <h3>${lang === 'ru' ? 'Размер выплаты / Объём помощи' : 'Төлем мөлшері / Көмек көлемі'}</h3>
+            <div class="amount-box">${lang === 'ru' ? benefit.amount_ru : benefit.amount_kz}</div>
+          </div>
+          <div class="detail-section">
+            <h3>${lang === 'ru' ? 'Кто имеет право' : 'Кімдер алуға құқылы'}</h3>
+            <p>${lang === 'ru' ? benefit.who_ru : benefit.who_kz}</p>
+          </div>
+          <div class="detail-section">
+            <h3>${lang === 'ru' ? 'Необходимые документы' : 'Қажетті құжаттар'}</h3>
+            <ul class="docs-list">${docsList}</ul>
+          </div>
+          <div class="detail-section">
+            <h3>${lang === 'ru' ? 'Как и где получить' : 'Қалай және қайдан алуға болады'}</h3>
+            <p>${lang === 'ru' ? benefit.how_ru : benefit.how_kz}</p>
+          </div>
+          ${benefit.source ? `
+          <div class="detail-section">
+            <h3>${t('sourceLabel')}</h3>
+            <a href="${benefit.source}" target="_blank" class="source-link">
+              ${ICONS.globe} ${lang === 'ru' ? 'Официальный источник' : 'Ресми дерек көзі'} →
+            </a>
+          </div>` : ''}
+        `;
+
+        // Render related benefits (fetching from list)
+        const relRes = await fetch(`/api/benefits/`);
+        const allBenefits = await relRes.json();
+        const related = allBenefits.filter(b => String(b.id) !== String(id)).slice(0, 6);
+        document.getElementById('relatedList').innerHTML = related.map(b => `
+          <div class="related-item" onclick="window.location='benefit.html?id=${b.id}'">
+            <div class="ri-icon">${ICONS[b.icon] || ICONS.shield}</div>
+            <div class="ri-text">
+              <h4>${lang === 'ru' ? b.title_ru : b.title_kz}</h4>
+              <p>${lang === 'ru' ? b.badge_ru : b.badge_kz}</p>
+            </div>
+          </div>
+        `).join('');
+
+        // i18n for static elements
+        document.getElementById('relatedTitle').textContent = lang === 'ru' ? 'Другие льготы' : 'Басқа жеңілдіктер';
+        document.getElementById('ctaTitle').textContent = lang === 'ru' ? 'Нужна помощь?' : 'Көмек керек пе?';
+        document.getElementById('ctaText').textContent = lang === 'ru' ? 'Подайте заявку онлайн и получите поддержку специалиста.' : 'Онлайн өтініш беріп, маман қолдауын алыңыз.';
+
+      } catch (err) {
         document.getElementById('detailCard').innerHTML = '<p style="padding:40px;color:var(--text-muted)">Льгота не найдена.</p>';
-        return;
       }
-
-      // Update page title
-      document.title = benefit.title[lang] + ' — Qamqor';
-
-      // Render detail card
-      const docs = benefit.docs[lang].map(d => `<li>${d}</li>`).join('');
-      const t = (k) => (TRANSLATIONS[lang]?.benefits?.[k] || k);
-
-      document.getElementById('detailCard').innerHTML = `
-    <div class="detail-head">
-      <div class="detail-icon">${ICONS[benefit.icon] || ICONS.shield}</div>
-      <div>
-        <div class="detail-badge">${benefit.badge[lang]}</div>
-        <h1>${benefit.title[lang]}</h1>
-      </div>
-    </div>
-    <div class="detail-section">
-      <h3>${lang === 'ru' ? 'О льготе' : 'Жеңілдік туралы'}</h3>
-      <p>${benefit.shortDesc[lang]}</p>
-    </div>
-    <div class="detail-section">
-      <h3>${lang === 'ru' ? 'Размер выплаты / Объём помощи' : 'Төлем мөлшері / Көмек көлемі'}</h3>
-      <div class="amount-box">${benefit.amount[lang]}</div>
-    </div>
-    <div class="detail-section">
-      <h3>${lang === 'ru' ? 'Кто имеет право' : 'Кімдер алуға құқылы'}</h3>
-      <p>${benefit.who[lang]}</p>
-    </div>
-    <div class="detail-section">
-      <h3>${lang === 'ru' ? 'Необходимые документы' : 'Қажетті құжаттар'}</h3>
-      <ul class="docs-list">${docs}</ul>
-    </div>
-    <div class="detail-section">
-      <h3>${lang === 'ru' ? 'Как и где получить' : 'Қалай және қайдан алуға болады'}</h3>
-      <p>${benefit.how[lang]}</p>
-    </div>
-    <div class="detail-section">
-      <h3>${t('sourceLabel')}</h3>
-      <a href="${benefit.source}" target="_blank" class="source-link">
-        ${ICONS.globe} ${lang === 'ru' ? 'Официальный источник' : 'Ресми дерек көзі'} →
-      </a>
-    </div>
-  `;
-
-      // Render related benefits
-      const related = BENEFITS.filter(b => b.id !== id).slice(0, 6);
-      document.getElementById('relatedList').innerHTML = related.map(b => `
-    <div class="related-item" onclick="window.location='benefit.html?id=${b.id}'">
-      <div class="ri-icon">${ICONS[b.icon] || ICONS.shield}</div>
-      <div class="ri-text">
-        <h4>${b.title[lang]}</h4>
-        <p>${b.badge[lang]}</p>
-      </div>
-    </div>
-  `).join('');
-
-      // i18n for static elements
-      document.getElementById('relatedTitle').textContent = lang === 'ru' ? 'Другие льготы' : 'Басқа жеңілдіктер';
-      document.getElementById('ctaTitle').textContent = lang === 'ru' ? 'Нужна помощь?' : 'Көмек керек пе?';
-      document.getElementById('ctaText').textContent = lang === 'ru' ? 'Подайте заявку онлайн и получите поддержку специалиста.' : 'Онлайн өтініш беріп, маман қолдауын алыңыз.';
     });
   </script>
 </body>
