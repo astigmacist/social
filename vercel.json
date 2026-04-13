@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "qamqor/wsgi.py",
+      "src": "rakhym/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "qamqor/wsgi.py"
+      "dest": "rakhym/wsgi.py"
     }
   ]
 }

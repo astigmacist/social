@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Мой профиль — Qamqor</title>
+  <title>Мой профиль — Rakhym</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/png" href="logo.png" />
@@ -89,7 +89,7 @@
   <nav class="navbar scrolled" id="navbar">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo">
-        <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" /><span>Qamqor</span>
+        <img src="logo.png" alt="Rakhym logo" class="nav-logo-img" /><span>Rakhym</span>
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html#apply" data-i="nav.apply">Подать заявку</a></li>
@@ -210,7 +210,7 @@
     let currentUser = null;
 
     function getToken() {
-      return localStorage.getItem('qamqor_access_token');
+      return localStorage.getItem('rakhym_access_token');
     }
 
     function authHeaders() {
@@ -280,7 +280,7 @@
     }
 
     async function tryRefresh() {
-      const refresh = localStorage.getItem('qamqor_refresh_token');
+      const refresh = localStorage.getItem('rakhym_refresh_token');
       if (!refresh) return false;
       try {
         const res = await fetch(`${API}/auth/refresh/`, {
@@ -290,7 +290,7 @@
         });
         if (!res.ok) return false;
         const data = await res.json();
-        localStorage.setItem('qamqor_access_token', data.access);
+        localStorage.setItem('rakhym_access_token', data.access);
         return true;
       } catch { return false; }
     }
@@ -407,7 +407,7 @@
         currentUser = result.user;
         renderProfile(currentUser);
         window.LANG = data.language;
-        localStorage.setItem('qamqor_lang', data.language);
+        localStorage.setItem('rakhym_lang', data.language);
         showToast('Профиль сохранён ✓');
       } else {
         showToast('Ошибка при сохранении', '#ef4444');
@@ -419,7 +419,7 @@
     }
 
     async function doLogout() {
-      const refresh = localStorage.getItem('qamqor_refresh_token');
+      const refresh = localStorage.getItem('rakhym_refresh_token');
       try {
         await fetch(`${API}/auth/logout/`, {
           method: 'POST',
@@ -427,9 +427,9 @@
           body: JSON.stringify({ refresh })
         });
       } catch {}
-      localStorage.removeItem('qamqor_access_token');
-      localStorage.removeItem('qamqor_refresh_token');
-      localStorage.removeItem('qamqor_user');
+      localStorage.removeItem('rakhym_access_token');
+      localStorage.removeItem('rakhym_refresh_token');
+      localStorage.removeItem('rakhym_user');
       window.location = 'index.html';
     }
 

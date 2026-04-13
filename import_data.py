@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qamqor.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rakhym.settings')
 django.setup()
 
 from social_support.models import Benefit, BenefitCategory

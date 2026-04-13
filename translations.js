@@ -1,4 +1,4 @@
-/* translations.js — RU / KZ strings for Qamqor */
+/* translations.js — RU / KZ strings for Rakhym */
 const TRANSLATIONS = {
     ru: {
         nav: {
@@ -67,13 +67,13 @@ const TRANSLATIONS = {
                 { label: 'Телефон', value: '+7 775 488 23 43', hint: 'Бесплатно, круглосуточно' },
                 { label: 'Email', value: 'aruzhanmamanova0@gmail.com', hint: 'Ответ в течение суток' },
                 { label: 'Адрес', value: 'г. Кызылорда, Айтеке би 29а', hint: 'Пн–Пт: 09:00–18:00' },
-                { label: 'Telegram', value: '@qamqorym_bot', hint: 'Быстрые ответы онлайн' }
+                { label: 'Telegram', value: '@rakhymym_bot', hint: 'Быстрые ответы онлайн' }
             ]
         },
         footer: {
             desc: 'Платформа социальной поддержки граждан Казахстана.',
             sections: 'Разделы', helpTypes: 'Виды помощи',
-            rights: '© 2026 Qamqor. Все права защищены.',
+            rights: '© 2026 Rakhym. Все права защищены.',
             helpList: ['Юридическая', 'Психологическая', 'Материальная', 'Медицинская']
         },
         modal: {
@@ -84,9 +84,9 @@ const TRANSLATIONS = {
             close: 'Закрыть'
         },
         chat: {
-            title: 'Qamqor Бот', subtitle: 'Виртуальный ассистент · Онлайн',
+            title: 'Rakhym Бот', subtitle: 'Виртуальный ассистент · Онлайн',
             placeholder: 'Напишите ваш вопрос...',
-            welcome: 'Здравствуйте! Я виртуальный ассистент Qamqor. Задайте вопрос или выберите один из вариантов ниже.',
+            welcome: 'Здравствуйте! Я виртуальный ассистент Rakhym. Задайте вопрос или выберите один из вариантов ниже.',
             suggestions: ['Как подать заявку?', 'Какие льготы мне положены?', 'Какие документы нужны?', 'Контакты и телефоны'],
             send: 'Отправить', typing: 'Печатает...'
         },
@@ -165,13 +165,13 @@ const TRANSLATIONS = {
                 { label: 'Телефон', value: '+7 775 488 23 43', hint: 'Тегін, тәулік бойы' },
                 { label: 'Email', value: 'aruzhanmamanova0@gmail.com', hint: 'Бір тәулік ішінде жауап' },
                 { label: 'Мекенжай', value: 'г. Қызылорда, Айтеке би 29а', hint: 'Дс–Жм: 09:00–18:00' },
-                { label: 'Telegram', value: '@qamqorym_bot', hint: 'Онлайн жылдам жауаптар' }
+                { label: 'Telegram', value: '@rakhymym_bot', hint: 'Онлайн жылдам жауаптар' }
             ]
         },
         footer: {
             desc: 'Қазақстан азаматтарын әлеуметтік қолдау платформасы.',
             sections: 'Бөлімдер', helpTypes: 'Көмек түрлері',
-            rights: '© 2026 Qamqor. Барлық құқықтар қорғалған.',
+            rights: '© 2026 Rakhym. Барлық құқықтар қорғалған.',
             helpList: ['Заңгерлік', 'Психологиялық', 'Материалдық', 'Медициналық']
         },
         modal: {
@@ -182,9 +182,9 @@ const TRANSLATIONS = {
             close: 'Жабу'
         },
         chat: {
-            title: 'Qamqor Бот', subtitle: 'Виртуалды ассистент · Онлайн',
+            title: 'Rakhym Бот', subtitle: 'Виртуалды ассистент · Онлайн',
             placeholder: 'Сұрағыңызды жазыңыз...',
-            welcome: 'Сәлем! Мен Qamqor виртуалды ассистентімін. Сұрақ қойыңыз немесе төмендегі нұсқалардың бірін таңдаңыз.',
+            welcome: 'Сәлем! Мен Rakhym виртуалды ассистентімін. Сұрақ қойыңыз немесе төмендегі нұсқалардың бірін таңдаңыз.',
             suggestions: ['Өтініш қалай беруге болады?', 'Маған қандай жеңілдіктер бар?', 'Қандай құжаттар қажет?', 'Байланыс деректері'],
             send: 'Жіберу', typing: 'Теріп жатыр...'
         },

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Льгота — Qamqor</title>
+  <title>Льгота — Rakhym</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css?v=2" />
@@ -14,8 +14,8 @@
   <nav class="navbar" id="navbar">
     <div class="nav-inner">
       <a href="index.html" class="nav-logo">
-        <img src="logo.png" alt="Qamqor logo" class="nav-logo-img" />
-        <span>Qamqor</span>
+        <img src="logo.png" alt="Rakhym logo" class="nav-logo-img" />
+        <span>Rakhym</span>
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html#apply" data-i="nav.apply">Подать заявку</a></li>
@@ -62,7 +62,7 @@
     <div class="chat-header">
       <div class="chat-avatar" id="chatAvatar"></div>
       <div class="chat-header-info">
-        <h4 data-i="chat.title">Qamqor Бот</h4>
+        <h4 data-i="chat.title">Rakhym Бот</h4>
         <p data-i="chat.subtitle">Виртуальный ассистент</p>
       </div>
       <button class="chat-close" onclick="toggleChat()" id="chatCloseBtn"></button>
@@ -92,7 +92,7 @@
         const benefit = await res.json();
 
         // Update page title
-        document.title = (lang === 'ru' ? benefit.title_ru : benefit.title_kz) + ' — Qamqor';
+        document.title = (lang === 'ru' ? benefit.title_ru : benefit.title_kz) + ' — Rakhym';
 
         // Render detail card
         const docsList = (lang === 'ru' ? benefit.docs_ru : benefit.docs_kz).split(',').map(d => `<li>${d.trim()}</li>`).join('');

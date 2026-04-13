@@ -1,10 +1,10 @@
 // ========== LANGUAGE ==========
-window.LANG = localStorage.getItem('qamqor_lang') || 'ru';
+window.LANG = localStorage.getItem('rakhym_lang') || 'ru';
 const API_BASE = '/api';
 
 function toggleLang() {
     window.LANG = window.LANG === 'ru' ? 'kz' : 'ru';
-    localStorage.setItem('qamqor_lang', window.LANG);
+    localStorage.setItem('rakhym_lang', window.LANG);
     
     // Add visual delay as requested
     const overlay = document.createElement('div');
@@ -328,7 +328,7 @@ function getBotResponse(msg, lang) {
         if (kw.apply.some(k => msg.includes(k))) return 'Чтобы подать заявку, перейдите в раздел <strong>«Подать заявку»</strong> на главной странице. Заполните форму с личными данными, выберите тип помощи и опишите ситуацию. Ответ — в течение 1–2 рабочих дней.';
         if (kw.benefits.some(k => msg.includes(k))) return 'В разделе <strong>«Льготы и пособия»</strong> представлено 12 видов льгот с фильтрами по категориям (семья, пожилые, ОВЗ, безработица, жильё). Нажмите на карточку для подробной информации с официальными источниками.';
         if (kw.docs.some(k => msg.includes(k))) return 'Обычно требуются: <strong>удостоверение личности</strong>, справка о доходах, справка о составе семьи. Конкретный список документов зависит от вида льготы — откройте нужную льготу для полного списка.';
-        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 775 488 23 43</strong>. Email: aruzhanmamanova0@gmail.com. Telegram: @qamqorym_bot. Адрес: г. Кызылорда, Айтеке би 29а.';
+        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 775 488 23 43</strong>. Email: aruzhanmamanova0@gmail.com. Telegram: @rakhymym_bot. Адрес: г. Кызылорда, Айтеке би 29а.';
         if (kw.asp.some(k => msg.includes(k))) return 'АСП — Адресная социальная помощь для семей с доходом ниже прожиточного минимума. Вы можете <a href="benefit.html?id=asp" style="color:var(--primary)">прочитать подробнее</a> или подать заявку онлайн через eGov.kz.';
         if (kw.birth.some(k => msg.includes(k))) return 'Пособие при рождении: от 38 МРП на первого ребёнка до 150 МРП на четвёртого и более. <a href="benefit.html?id=birth" style="color:var(--primary)">Подробнее о льготе.</a>';
         if (kw.unemploy.some(k => msg.includes(k))) return 'Пособие по безработице назначается при постановке на учёт в ЦЗН в течение 30 дней после увольнения. <a href="benefit.html?id=unemployment" style="color:var(--primary)">Подробнее.</a>';
@@ -337,7 +337,7 @@ function getBotResponse(msg, lang) {
         if (kw.apply.some(k => msg.includes(k))) return '«<strong>Өтініш беру</strong>» бөліміне өтіңіз. Жеке деректерді толтырыңыз, көмек түрін таңдап, жағдайыңызды сипаттаңыз. Жауап — 1–2 жұмыс күні ішінде.';
         if (kw.benefits.some(k => msg.includes(k))) return '«<strong>Жеңілдіктер</strong>» бөлімінде 12 түрлі жеңілдік санаттар бойынша сүзгіде берілген. Толық ақпарат алу үшін картаны басыңыз.';
         if (kw.docs.some(k => msg.includes(k))) return 'Әдетте: <strong>жеке куәлік</strong>, табыс туралы анықтама, отбасы құрамы туралы анықтама қажет. Нақты тізім жеңілдік түріне байланысты.';
-        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 775 488 23 43</strong>. Email: aruzhanmamanova0@gmail.com. Telegram: @qamqorym_bot. Мекенжай: г. Қызылорда, Айтеке би 29а.';
+        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 775 488 23 43</strong>. Email: aruzhanmamanova0@gmail.com. Telegram: @rakhymym_bot. Мекенжай: г. Қызылорда, Айтеке би 29а.';
         if (kw.asp.some(k => msg.includes(k))) return 'ААК — табысы күнкөріс минимумынан төмен отбасыларға арналған атаулы әлеуметтік көмек. <a href="benefit.html?id=asp" style="color:var(--primary)">Толығырақ оқу.</a>';
         if (kw.birth.some(k => msg.includes(k))) return 'Бала туғанда жәрдемақы: бірінші балаға 38 АЕК-тен, төртінші және одан көп балаға 150 АЕК-ке дейін. <a href="benefit.html?id=birth" style="color:var(--primary)">Толығырақ.</a>';
         if (kw.unemploy.some(k => msg.includes(k))) return 'Жұмыссыздық жәрдемақысы жұмыстан шыққаннан кейін 30 күн ішінде ЕОО-да есепке тұрса тағайындалады. <a href="benefit.html?id=unemployment" style="color:var(--primary)">Толығырақ.</a>';
@@ -361,7 +361,7 @@ async function submitApply(e) {
     const typeText = type ? type.options[type.selectedIndex]?.text : '—';
     const desc = document.getElementById('fDesc')?.value.trim() || '—';
 
-    const token = localStorage.getItem('qamqor_access_token');
+    const token = localStorage.getItem('rakhym_access_token');
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -410,7 +410,7 @@ async function submitVol(e) {
     const role = document.getElementById('vRole').value;
     const about = e.target.querySelector('textarea').value;
 
-    const token = localStorage.getItem('qamqor_access_token');
+    const token = localStorage.getItem('rakhym_access_token');
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -513,7 +513,7 @@ function applyLoginMask(input) {
 
 // ========== AUTH MODAL ==========
 function openAuthModal() {
-    if (localStorage.getItem('qamqor_access_token')) {
+    if (localStorage.getItem('rakhym_access_token')) {
         window.location = 'profile.html';
         return;
     }
@@ -555,9 +555,9 @@ async function doLogin() {
             alert(data.error || (window.LANG === 'kz' ? 'Қате логин немесе пароль' : 'Неверный логин или пароль'));
             return;
         }
-        localStorage.setItem('qamqor_access_token', data.tokens.access);
-        localStorage.setItem('qamqor_refresh_token', data.tokens.refresh);
-        localStorage.setItem('qamqor_user', JSON.stringify(data.user));
+        localStorage.setItem('rakhym_access_token', data.tokens.access);
+        localStorage.setItem('rakhym_refresh_token', data.tokens.refresh);
+        localStorage.setItem('rakhym_user', JSON.stringify(data.user));
         closeAuthModal();
         updateProfileBtn(data.user);
         setTimeout(() => window.location = 'profile.html', 300);
@@ -591,9 +591,9 @@ async function doRegister() {
             alert(errs);
             return;
         }
-        localStorage.setItem('qamqor_access_token', data.tokens.access);
-        localStorage.setItem('qamqor_refresh_token', data.tokens.refresh);
-        localStorage.setItem('qamqor_user', JSON.stringify(data.user));
+        localStorage.setItem('rakhym_access_token', data.tokens.access);
+        localStorage.setItem('rakhym_refresh_token', data.tokens.refresh);
+        localStorage.setItem('rakhym_user', JSON.stringify(data.user));
         closeAuthModal();
         updateProfileBtn(data.user);
         setTimeout(() => window.location = 'profile.html', 300);
@@ -639,7 +639,7 @@ function showEGovModal() {
         }</p>
         <p style="font-size:0.8rem;color:#9ca3af">${window.LANG === 'kz'
           ? 'Интеграция іске асырылу үстінде. Қазір тіркелу арқылы кіруіңізді сұраймыз.'
-          : 'Интеграция находится в разработке. Пока что, пожалуйста, войдите или зарегистрируйтесь на Qamqor.'}</p>
+          : 'Интеграция находится в разработке. Пока что, пожалуйста, войдите или зарегистрируйтесь на Rakhym.'}</p>
         <div class="egov-btn-group">
           <a href="https://egov.kz" target="_blank" class="egov-btn-primary">Перейти на eGov.kz</a>
           <button class="egov-btn-secondary" onclick="document.getElementById('egovOverlay').classList.remove('active'); openAuthModal()">
@@ -670,9 +670,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Restore auth state from JWT on all pages
-    const token = localStorage.getItem('qamqor_access_token');
+    const token = localStorage.getItem('rakhym_access_token');
     if (token) {
-        const user = JSON.parse(localStorage.getItem('qamqor_user') || 'null');
+        const user = JSON.parse(localStorage.getItem('rakhym_user') || 'null');
         if (user) updateProfileBtn(user);
     }
 
