@@ -328,7 +328,7 @@ function getBotResponse(msg, lang) {
         if (kw.apply.some(k => msg.includes(k))) return 'Чтобы подать заявку, перейдите в раздел <strong>«Подать заявку»</strong> на главной странице. Заполните форму с личными данными, выберите тип помощи и опишите ситуацию. Ответ — в течение 1–2 рабочих дней.';
         if (kw.benefits.some(k => msg.includes(k))) return 'В разделе <strong>«Льготы и пособия»</strong> представлено 12 видов льгот с фильтрами по категориям (семья, пожилые, ОВЗ, безработица, жильё). Нажмите на карточку для подробной информации с официальными источниками.';
         if (kw.docs.some(k => msg.includes(k))) return 'Обычно требуются: <strong>удостоверение личности</strong>, справка о доходах, справка о составе семьи. Конкретный список документов зависит от вида льготы — откройте нужную льготу для полного списка.';
-        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 775 488 23 43</strong>. Email: aruzhanmamanova0@gmail.com. Telegram: @rakhymym_bot. Адрес: г. Кызылорда, Айтеке би 29а.';
+        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 777 283 0172</strong>. Email: rakhymrakhym28@gmail.com. Адрес: г. Кызылорда, Айтеке би 29а.';
         if (kw.asp.some(k => msg.includes(k))) return 'АСП — Адресная социальная помощь для семей с доходом ниже прожиточного минимума. Вы можете <a href="benefit.html?id=asp" style="color:var(--primary)">прочитать подробнее</a> или подать заявку онлайн через eGov.kz.';
         if (kw.birth.some(k => msg.includes(k))) return 'Пособие при рождении: от 38 МРП на первого ребёнка до 150 МРП на четвёртого и более. <a href="benefit.html?id=birth" style="color:var(--primary)">Подробнее о льготе.</a>';
         if (kw.unemploy.some(k => msg.includes(k))) return 'Пособие по безработице назначается при постановке на учёт в ЦЗН в течение 30 дней после увольнения. <a href="benefit.html?id=unemployment" style="color:var(--primary)">Подробнее.</a>';
@@ -337,7 +337,7 @@ function getBotResponse(msg, lang) {
         if (kw.apply.some(k => msg.includes(k))) return '«<strong>Өтініш беру</strong>» бөліміне өтіңіз. Жеке деректерді толтырыңыз, көмек түрін таңдап, жағдайыңызды сипаттаңыз. Жауап — 1–2 жұмыс күні ішінде.';
         if (kw.benefits.some(k => msg.includes(k))) return '«<strong>Жеңілдіктер</strong>» бөлімінде 12 түрлі жеңілдік санаттар бойынша сүзгіде берілген. Толық ақпарат алу үшін картаны басыңыз.';
         if (kw.docs.some(k => msg.includes(k))) return 'Әдетте: <strong>жеке куәлік</strong>, табыс туралы анықтама, отбасы құрамы туралы анықтама қажет. Нақты тізім жеңілдік түріне байланысты.';
-        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 775 488 23 43</strong>. Email: aruzhanmamanova0@gmail.com. Telegram: @rakhymym_bot. Мекенжай: г. Қызылорда, Айтеке би 29а.';
+        if (kw.contacts.some(k => msg.includes(k))) return 'Телефон: <strong>+7 777 283 0172</strong>. Email: rakhymrakhym28@gmail.com. Мекенжай: г. Қызылорда, Айтеке би 29а.';
         if (kw.asp.some(k => msg.includes(k))) return 'ААК — табысы күнкөріс минимумынан төмен отбасыларға арналған атаулы әлеуметтік көмек. <a href="benefit.html?id=asp" style="color:var(--primary)">Толығырақ оқу.</a>';
         if (kw.birth.some(k => msg.includes(k))) return 'Бала туғанда жәрдемақы: бірінші балаға 38 АЕК-тен, төртінші және одан көп балаға 150 АЕК-ке дейін. <a href="benefit.html?id=birth" style="color:var(--primary)">Толығырақ.</a>';
         if (kw.unemploy.some(k => msg.includes(k))) return 'Жұмыссыздық жәрдемақысы жұмыстан шыққаннан кейін 30 күн ішінде ЕОО-да есепке тұрса тағайындалады. <a href="benefit.html?id=unemployment" style="color:var(--primary)">Толығырақ.</a>';
@@ -651,7 +651,7 @@ function showEGovModal() {
 }
 
 function showReset() {
-    alert(window.LANG === 'kz' ? 'Телефонмен хабарласыңыз: +7 775 488 23 43' : 'Обратитесь по телефону: +7 775 488 23 43');
+    alert(window.LANG === 'kz' ? 'Телефонмен хабарласыңыз: +7 777 283 0172' : 'Обратитесь по телефону: +7 777 283 0172');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -779,12 +779,48 @@ async function renderNews() {
     const grid = document.getElementById('newsGrid');
     if (!grid) return;
     try {
-        const res = await fetch(`${API_BASE}/news/?limit=6`);
-        const news = await res.json();
-        if (!news.length) {
-            grid.innerHTML = '<p class="news-loading">Новостей пока нет.</p>';
-            return;
+        const mockNews = [
+            {
+                title_ru: 'Новые правила получения АСП с 2026 года',
+                title_kz: '2026 жылдан бастап АӘК алудың жаңа ережелері',
+                body_ru: 'Министерство труда и социальной защиты населения РК сообщило о внедрении проактивного формата назначения адресной социальной помощи. Теперь гражданам не придется подавать бумажные заявления...',
+                body_kz: 'ҚР Еңбек және халықты әлеуметтік қорғау министрлігі атаулы әлеуметтік көмекті тағайындаудың проактивті форматын енгізу туралы хабарлады...',
+                category: 'news',
+                image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80',
+                created_at: new Date(Date.now() - 86400000).toISOString(),
+                source_url: '#'
+            },
+            {
+                title_ru: 'Увеличены пособия по инвалидности',
+                title_kz: 'Мүгедектік бойынша жәрдемақылар өсті',
+                body_ru: 'С 1 января размер социальных выплат по инвалидности и по случаю потери кормильца увеличен на 8,5%. Это затронет более 500 тысяч получателей по всей стране.',
+                body_kz: '1 қаңтардан бастап мүгедектігі бойынша және асыраушысынан айырылу жағдайы бойынша әлеуметтік төлемдер 8,5%-ға өсті. Бұл бүкіл ел бойынша 500 мыңнан астам алушыға қатысты.',
+                category: 'law',
+                image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80',
+                created_at: new Date(Date.now() - 3 * 86400000).toISOString(),
+                source_url: '#'
+            },
+            {
+                title_ru: 'Открыт новый центр поддержки семей',
+                title_kz: 'Отбасыларды қолдаудың жаңа орталығы ашылды',
+                body_ru: 'В столице заработал единый центр поддержки, где можно получить юридическую и психологическую помощь по принципу «одного окна».',
+                body_kz: 'Елордада «бір терезе» қағидаты бойынша заңгерлік және психологиялық көмек алуға болатын бірыңғай қолдау орталығы жұмысын бастады.',
+                category: 'event',
+                image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=600&q=80',
+                created_at: new Date(Date.now() - 7 * 86400000).toISOString(),
+                source_url: '#'
+            }
+        ];
+
+        let news = [];
+        try {
+            const res = await fetch(`${API_BASE}/news/?limit=3`);
+            news = await res.json();
+            if (!news || !news.length) news = mockNews;
+        } catch(err) {
+            news = mockNews;
         }
+        
         const lang = window.LANG;
         const catColors = { news:'news', announcement:'announcement', law:'law', event:'event' };
         const catLabels = {
@@ -795,20 +831,24 @@ async function renderNews() {
             const title = lang === 'kz' ? item.title_kz : item.title_ru;
             const body = lang === 'kz' ? item.body_kz : item.body_ru;
             const catKey = item.category;
-            const catLabel = catLabels[lang]?.[catKey] || item.category_display;
+            const catLabel = catLabels[lang]?.[catKey] || item.category_display || catLabels[lang]?.['news'];
             const date = new Date(item.created_at).toLocaleDateString(lang === 'kz' ? 'kk-KZ' : 'ru-RU', {day:'numeric',month:'long'});
-            const sourceBtn = item.source_url
+            const sourceBtn = item.source_url && item.source_url !== '#'
                 ? `<a href="${item.source_url}" target="_blank" class="news-source-link">🔗 Источник</a>`
                 : '<span></span>';
+            const imageUrl = item.image || item.image_url || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80';
             return `
               <div class="news-card">
-                <div class="news-meta">
-                  <span class="news-badge ${catColors[catKey]}">${catLabel}</span>
-                  <span class="news-date">${date}</span>
+                <div class="news-image"><img src="${imageUrl}" alt="News image" /></div>
+                <div class="news-content">
+                  <div class="news-meta">
+                    <span class="news-badge ${catColors[catKey] || 'news'}">${catLabel}</span>
+                    <span class="news-date">${date}</span>
+                  </div>
+                  <div class="news-title">${title}</div>
+                  <div class="news-body">${body}</div>
+                  <div class="news-footer">${sourceBtn}</div>
                 </div>
-                <div class="news-title">${title}</div>
-                <div class="news-body">${body}</div>
-                <div class="news-footer">${sourceBtn}</div>
               </div>`;
         }).join('');
     } catch(e) {

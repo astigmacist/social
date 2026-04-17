@@ -25,6 +25,7 @@
       </div>
       <ul class="nav-links" id="navLinks">
         <li><a href="#hero" data-i="nav.home">Главная</a></li>
+        <li><a href="#news" data-i="nav.news">Новости</a></li>
         <li><a href="#apply" data-i="nav.apply">Подать заявку</a></li>
         <li><a href="#benefits" data-i="nav.benefits">Льготы и пособия</a></li>
         <li><a href="#volunteers" data-i="nav.volunteers">Волонтёрам</a></li>
@@ -97,6 +98,22 @@
       </div>
     </div>
   </div>
+
+  <!-- NEWS SECTION -->
+  <section id="news" class="section">
+    <div class="container">
+      <div class="sec-hdr">
+        <span class="sec-tag">Актуально</span>
+        <h2 class="sec-title"><span data-i="news.title">Новости и</span> <span class="accent"
+            data-i="news.titleAccent">объявления</span></h2>
+        <p class="sec-desc" data-i="news.desc">Последние изменения в законодательстве и программах социальной поддержки
+        </p>
+      </div>
+      <div class="news-grid" id="newsGrid">
+        <div class="news-loading">Загрузка новостей...</div>
+      </div>
+    </div>
+  </section>
 
   <!-- APPLY -->
   <section id="apply" class="section alt">
@@ -188,7 +205,8 @@
         <div class="vol-form">
           <h3 data-i="volunteers.formTitle">Записаться волонтёром</h3>
           <form id="volForm" onsubmit="submitVol(event)">
-            <div class="form-group"><label data-i="volunteers.fName">Ваше имя</label><input type="text" required data-i-ph="apply.namePh" placeholder="" /></div>
+            <div class="form-group"><label data-i="volunteers.fName">Ваше имя</label><input type="text" required
+                data-i-ph="apply.namePh" placeholder="" /></div>
             <div class="form-group"><label data-i="volunteers.fPhone">Телефон</label><input type="tel" required
                 placeholder="+7 (___) ___-__-__" /></div>
             <div class="form-group">
@@ -218,21 +236,7 @@
     </div>
   </section>
 
-  <!-- NEWS SECTION -->
-  <section id="news" class="section">
-    <div class="container">
-      <div class="sec-hdr">
-        <span class="sec-tag">Актуально</span>
-        <h2 class="sec-title"><span data-i="news.title">Новости и</span> <span class="accent"
-            data-i="news.titleAccent">объявления</span></h2>
-        <p class="sec-desc" data-i="news.desc">Последние изменения в законодательстве и программах социальной поддержки
-        </p>
-      </div>
-      <div class="news-grid" id="newsGrid">
-        <div class="news-loading">Загрузка новостей...</div>
-      </div>
-    </div>
-  </section>
+
 
   <!-- FOOTER -->
   <footer class="footer">

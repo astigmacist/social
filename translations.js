@@ -2,7 +2,7 @@
 const TRANSLATIONS = {
     ru: {
         nav: {
-            home: 'Главная', apply: 'Подать заявку', benefits: 'Льготы и пособия',
+            home: 'Главная', news: 'Новости', apply: 'Подать заявку', benefits: 'Льготы и пособия',
             volunteers: 'Волонтёрам', contacts: 'Контакты',
             profile: 'Мой профиль', signin: 'Войти', langSwitch: 'ҚАЗ'
         },
@@ -64,10 +64,9 @@ const TRANSLATIONS = {
         contacts: {
             tag: 'Контакты', title: 'Свяжитесь с нами',
             items: [
-                { label: 'Телефон', value: '+7 775 488 23 43', hint: 'Бесплатно, круглосуточно' },
-                { label: 'Email', value: 'aruzhanmamanova0@gmail.com', hint: 'Ответ в течение суток' },
-                { label: 'Адрес', value: 'г. Кызылорда, Айтеке би 29а', hint: 'Пн–Пт: 09:00–18:00' },
-                { label: 'Telegram', value: '@rakhymym_bot', hint: 'Быстрые ответы онлайн' }
+                { label: 'Телефон', value: '+7 777 283 0172', hint: 'Бесплатно, круглосуточно' },
+                { label: 'Email', value: 'rakhymrakhym28@gmail.com', hint: 'Ответ в течение суток' },
+                { label: 'Адрес', value: 'г. Кызылорда, Айтеке би 29а', hint: 'Пн–Пт: 09:00–18:00' }
             ]
         },
         footer: {
@@ -100,7 +99,7 @@ const TRANSLATIONS = {
     },
     kz: {
         nav: {
-            home: 'Басты бет', apply: 'Өтініш беру', benefits: 'Жеңілдіктер',
+            home: 'Басты бет', news: 'Жаңалықтар', apply: 'Өтініш беру', benefits: 'Жеңілдіктер',
             volunteers: 'Еріктілерге', contacts: 'Байланыс',
             profile: 'Менің профилім', signin: 'Кіру', langSwitch: 'РУС'
         },
@@ -162,10 +161,9 @@ const TRANSLATIONS = {
         contacts: {
             tag: 'Байланыс', title: 'Бізбен хабарласыңыз',
             items: [
-                { label: 'Телефон', value: '+7 775 488 23 43', hint: 'Тегін, тәулік бойы' },
-                { label: 'Email', value: 'aruzhanmamanova0@gmail.com', hint: 'Бір тәулік ішінде жауап' },
-                { label: 'Мекенжай', value: 'г. Қызылорда, Айтеке би 29а', hint: 'Дс–Жм: 09:00–18:00' },
-                { label: 'Telegram', value: '@rakhymym_bot', hint: 'Онлайн жылдам жауаптар' }
+                { label: 'Телефон', value: '+7 777 283 0172', hint: 'Тегін, тәулік бойы' },
+                { label: 'Email', value: 'rakhymrakhym28@gmail.com', hint: 'Бір тәулік ішінде жауап' },
+                { label: 'Мекенжай', value: 'г. Қызылорда, Айтеке би 29а', hint: 'Дс–Жм: 09:00–18:00' }
             ]
         },
         footer: {
