@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,31 +81,37 @@ WSGI_APPLICATION = 'rakhym.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 import os
-import shutil
+import dj_database_url
 
-if os.environ.get('VERCEL') == '1':
-    db_path = BASE_DIR / 'db.sqlite3'
-    tmp_db_path = '/tmp/db.sqlite3'
-    if os.path.exists(db_path) and not os.path.exists(tmp_db_path):
-        try:
-            shutil.copy2(db_path, tmp_db_path)
-        except Exception:
-            pass
+DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('POSTGRES_URL')
+
+if DATABASE_URL:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': tmp_db_path if os.path.exists(tmp_db_path) else db_path,
-        }
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
 else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+    import shutil
+    if os.environ.get('VERCEL') == '1':
+        db_path = BASE_DIR / 'db.sqlite3'
+        tmp_db_path = '/tmp/db.sqlite3'
+        if os.path.exists(db_path) and not os.path.exists(tmp_db_path):
+            try:
+                shutil.copy2(db_path, tmp_db_path)
+            except Exception:
+                pass
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': tmp_db_path if os.path.exists(tmp_db_path) else db_path,
+            }
         }
-    }
-
-
+    else:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -140,8 +147,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR]
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -176,7 +191,7 @@ JAZZMIN_SETTINGS = {
     "search_model": ["auth.User", "social_support.Benefit"],
     "topmenu_links": [
         {"name": "Главная", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "Сайт", "url": "http://localhost:8000", "new_window": True},
+        {"name": "Сайт", "url": "/", "new_window": True},
     ],
     "show_sidebar": True,
     "navigation_expanded": True,
@@ -202,7 +217,7 @@ JAZZMIN_SETTINGS = {
     ],
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
-    "custom_css": "static/admin/css/custom_admin.css",
+    "custom_css": None,
 }
 
 JAZZMIN_UI_TWEAKS = {

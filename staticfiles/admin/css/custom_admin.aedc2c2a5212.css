@@ -1,0 +1,224 @@
+:root {
+    color-scheme: light !important;
+    --primary: #2D8653;
+    --primary-dark: #1F6040;
+    --primary-light: #EBF7EF;
+    --white: #FFFFFF !important;
+    --text-dark: #1A2E22 !important;
+    --border-color: #DDE8E1 !important;
+}
+
+html, body {
+    color-scheme: light !important;
+    background-color: var(--white) !important;
+    color: var(--text-dark) !important;
+}
+
+
+/* Force light mode even if system/browser prefers dark */
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: light !important;
+    }
+    body, .wrapper, .content-wrapper, .main-header, .main-sidebar, .card, .info-box, .small-box, .modal-content {
+        background-color: var(--white) !important;
+        color: var(--text-dark) !important;
+    }
+}
+
+/* Prevent AdminLTE dark-mode class from triggering */
+.dark-mode, .dark-mode body, .dark-mode .content-wrapper, .dark-mode .main-header, .dark-mode .main-sidebar {
+    background-color: var(--white) !important;
+    color: var(--text-dark) !important;
+}
+
+body, .wrapper, .content-wrapper, .main-header, .main-sidebar, .card, .info-box, .small-box, .modal-content, .nav-sidebar, .nav-item, .nav-link, .brand-link {
+    font-family: 'Inter', sans-serif !important;
+    background-color: var(--white) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Explicitly kill any dark mode backgrounds from AdminLTE */
+[class*="sidebar-dark-"], [class*="navbar-dark-"], .dark-mode {
+    background-color: var(--white) !important;
+    color: var(--text-dark) !important;
+}
+
+
+/* Sidebar Styling */
+.main-sidebar, .sidebar, .user-panel, .sidebar-search-results, .brand-link {
+    background-color: var(--white) !important;
+    color: var(--text-dark) !important;
+    border-right: 1px solid var(--border-color) !important;
+}
+
+.brand-link {
+    background-color: var(--white) !important;
+    color: var(--primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+}
+
+.nav-link i, .nav-link p {
+    color: var(--text-dark) !important;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--primary-light) !important;
+    color: var(--primary) !important;
+}
+
+.nav-link.active i, .nav-link.active p {
+    color: var(--primary) !important;
+}
+
+
+
+.sidebar-light-success .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--primary) !important;
+    color: var(--white) !important;
+    box-shadow: 0 4px 12px rgba(45, 134, 83, 0.2) !important;
+}
+
+.nav-link {
+    color: var(--text-dark) !important;
+}
+
+.nav-link:hover {
+    color: var(--primary) !important;
+    background-color: var(--primary-light) !important;
+}
+
+/* Header / Navbar */
+.main-header, .navbar {
+    background-color: var(--white) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+
+.navbar-success {
+    background-color: var(--primary) !important;
+}
+
+/* Content Area */
+.content-wrapper {
+    padding: 20px !important;
+}
+
+.breadcrumb {
+    background: transparent !important;
+}
+
+/* Custom Badges */
+.badge-status {
+    padding: 4px 14px !important;
+    border-radius: 50px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge-pending { background-color: #f59e0b !important; }
+.badge-processing { background-color: #3b82f6 !important; }
+.badge-assigned { background-color: #8b5cf6 !important; }
+.badge-done { background-color: #10b981 !important; }
+.badge-rejected { background-color: #ef4444 !important; }
+
+.badge-role {
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+}
+
+.badge-label {
+    background-color: var(--primary-light) !important;
+    color: var(--primary) !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+}
+
+/* Cards & Tables */
+.card {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+    margin-bottom: 2rem !important;
+}
+
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.card-title {
+    font-weight: 800 !important;
+    color: var(--primary) !important;
+}
+
+.table thead th {
+    background-color: var(--primary-light) !important;
+    color: var(--primary) !important;
+    border-top: none !important;
+    border-bottom: 2px solid var(--primary) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+}
+
+.table td {
+    border-top: 1px solid var(--border-color) !important;
+    padding: 1rem !important;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-primary, .btn-success, .btn-save {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    background-color: var(--primary-dark) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 134, 83, 0.3) !important;
+}
+
+/* Login Page Styling */
+.login-page {
+    background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%) !important;
+}
+
+.login-box .card {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 20px 60px rgba(45, 134, 83, 0.1) !important;
+}
+
+.login-logo b {
+    color: var(--primary) !important;
+    font-weight: 900 !important;
+}
+
+/* Remove all remaining AdminLTE grays */
+.text-muted {
+    color: #5c7a6a !important;
+}
+
+input, select, textarea {
+    border-radius: 8px !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(45, 134, 83, 0.1) !important;
+}

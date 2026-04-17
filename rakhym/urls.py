@@ -21,6 +21,16 @@ def serve_root(request):
     return serve_html(request, 'index.html')
 
 
+def serve_file(request, path):
+    """Serve arbitrary files from project root (JS, CSS, images, fonts)."""
+    file_path = os.path.join(settings.BASE_DIR, path)
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        import mimetypes
+        content_type, _ = mimetypes.guess_type(file_path)
+        return FileResponse(open(file_path, 'rb'), content_type=content_type or 'application/octet-stream')
+    return HttpResponse('Not Found', status=404)
+
+
 urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
@@ -34,7 +44,7 @@ urlpatterns = [
     path('benefit.html', lambda req: serve_html(req, 'benefit.html')),
     path('profile.html', lambda req: serve_html(req, 'profile.html')),
 
-    # Static files (JS, CSS, images, etc.)
-    re_path(r'^(?P<path>.+\.(js|css|png|jpg|svg|ico|woff2?|ttf|eot))$',
-            serve, {'document_root': settings.BASE_DIR}),
+    # Root-level static files (main.js, style.css, logo.png, translations.js, data.js)
+    re_path(r'^(?P<path>(?!static/|admin/|api/).+\.(js|css|png|jpg|jpeg|svg|ico|woff2?|ttf|eot))$',
+            serve_file),
 ]
