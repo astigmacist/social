@@ -79,12 +79,31 @@ WSGI_APPLICATION = 'rakhym.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+import os
+import shutil
+
+if os.environ.get('VERCEL') == '1':
+    db_path = BASE_DIR / 'db.sqlite3'
+    tmp_db_path = '/tmp/db.sqlite3'
+    if os.path.exists(db_path) and not os.path.exists(tmp_db_path):
+        try:
+            shutil.copy2(db_path, tmp_db_path)
+        except Exception:
+            pass
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': tmp_db_path if os.path.exists(tmp_db_path) else db_path,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 
 # Password validation
